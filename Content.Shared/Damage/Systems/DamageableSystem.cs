@@ -12,11 +12,6 @@ using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
-// Shitmed Change
-using Content.Shared.Body.Systems;
-using Content.Shared._Shitmed.Targeting;
-using Robust.Shared.Random;
-
 namespace Content.Shared.Damage
 {
     public sealed class DamageableSystem : EntitySystem
@@ -24,8 +19,6 @@ namespace Content.Shared.Damage
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
         [Dependency] private readonly INetManager _netMan = default!;
-        [Dependency] private readonly SharedBodySystem _body = default!; // Shitmed Change
-        [Dependency] private readonly IRobustRandom _random = default!; // Shitmed Change
         [Dependency] private readonly MobThresholdSystem _mobThreshold = default!;
 
         private EntityQuery<AppearanceComponent> _appearanceQuery;
@@ -133,7 +126,9 @@ namespace Content.Shared.Damage
         public DamageSpecifier? TryChangeDamage(EntityUid? uid, DamageSpecifier damage, bool ignoreResistances = false,
             bool interruptsDoAfters = true, DamageableComponent? damageable = null, EntityUid? origin = null,
             // Shitmed Change
-            bool? canSever = true, bool? canEvade = false, float? partMultiplier = 1.00f, TargetBodyPart? targetPart = null)
+            bool? canSever = true, bool? canEvade = false, float? partMultiplier = 1.00f, TargetBodyPart? targetPart = null,
+            // Goobstation - Prediction port
+            EntityUid? tool = null)
         {
             if (!uid.HasValue || !_damageableQuery.Resolve(uid.Value, ref damageable, false))
             {
@@ -152,15 +147,6 @@ namespace Content.Shared.Damage
             if (before.Cancelled)
                 return null;
 
-            // Shitmed Change Start
-            var partDamage = new TryChangePartDamageEvent(damage, origin, targetPart, ignoreResistances, canSever ?? true, canEvade ?? false, partMultiplier ?? 1.00f);
-            RaiseLocalEvent(uid.Value, ref partDamage);
-
-            if (partDamage.Evaded || partDamage.Cancelled)
-                return null;
-
-            // Shitmed Change End
-
             // Apply resistances
             if (!ignoreResistances)
             {
@@ -173,7 +159,7 @@ namespace Content.Shared.Damage
                     damage = DamageSpecifier.ApplyModifierSet(damage, modifierSet);
                 }
 
-                var ev = new DamageModifyEvent(damage, origin, targetPart); // Shitmed Change
+                var ev = new DamageModifyEvent(damage, origin, targetPart, tool); // Goobstation - Shitmed / Gun Prediction port
                 RaiseLocalEvent(uid.Value, ev);
                 damage = ev.Damage;
 
@@ -356,13 +342,15 @@ namespace Content.Shared.Damage
         public DamageSpecifier Damage;
         public EntityUid? Origin;
         public readonly TargetBodyPart? TargetPart; // Shitmed Change
+        public EntityUid? Tool;
 
-        public DamageModifyEvent(DamageSpecifier damage, EntityUid? origin = null, TargetBodyPart? targetPart = null) // Shitmed Change
+        public DamageModifyEvent(DamageSpecifier damage, EntityUid? origin = null, TargetBodyPart? targetPart = null, EntityUid? tool = null)
         {
             OriginalDamage = damage;
             Damage = damage;
             Origin = origin;
             TargetPart = targetPart; // Shitmed Change
+            Tool = tool;
         }
     }
 
