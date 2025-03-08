@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Server._BloodCult.Items.BloodSpear;
 using Content.Server.Actions;
 using Content.Server.Antag;
 using Content.Server.Antag.Components;
@@ -7,8 +8,6 @@ using Content.Server.Body.Systems;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Server.Hands.Systems;
-using Content.Server.Language;
-using Content.Server.NPC.Systems;
 using Content.Server.Pinpointer;
 using Content.Server.Roles;
 using Content.Server.RoundEnd;
@@ -16,50 +15,56 @@ using Content.Server.WhiteDream.BloodCult.Items.BloodSpear;
 using Content.Server.WhiteDream.BloodCult.Objectives;
 using Content.Server.WhiteDream.BloodCult.RendingRunePlacement;
 using Content.Server.WhiteDream.BloodCult.Spells;
+using Content.Shared.Body.Systems;
 using Content.Shared.Cloning;
 using Content.Shared.Cuffs.Components;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
+using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Pulling.Components;
-using Content.Shared.WhiteDream.BloodCult.Components;
+using Content.Shared.NPC.Systems;
+using Content.Shared.Roles;
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
+using Content.Shared.WhiteDream.BloodCult.Components;
 using Content.Shared.WhiteDream.BloodCult.Items;
 using Robust.Server.Containers;
-using Robust.Server.GameObjects;
+using Robust.Shared.Audio;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
+using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 
-namespace Content.Server.WhiteDream.BloodCult.Gamerule;
+namespace Content.Server._BloodCult.GameRule;
 
 public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
 {
     [Dependency] private readonly IRobustRandom _random = default!;
 
     [Dependency] private readonly ActionsSystem _actions = default!;
+    [Dependency] private readonly NavMapSystem _navMap = default!;
     [Dependency] private readonly AntagSelectionSystem _antagSelection = default!;
     [Dependency] private readonly BloodSpearSystem _bloodSpear = default!;
     [Dependency] private readonly BodySystem _body = default!;
     [Dependency] private readonly ContainerSystem _container = default!;
     [Dependency] private readonly HandsSystem _hands = default!;
-    [Dependency] private readonly InventorySystem _inventorySystem = default!;
-    [Dependency] private readonly LanguageSystem _languageSystem = default!;
-    [Dependency] private readonly NpcFactionSystem _factionSystem = default!;
-    [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
-    [Dependency] private readonly RoundEndSystem _roundEndSystem = default!;
-    [Dependency] private readonly SharedBodySystem _bodySystem = default!;
-    [Dependency] private readonly SharedRoleSystem _roleSystem = default!;
-    [Dependency] private readonly SharedMindSystem _mindSystem = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private readonly NpcFactionSystem _faction = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
+    [Dependency] private readonly RoundEndSystem _roundEnd = default!;
+    [Dependency] private readonly SharedRoleSystem _role = default!;
+    [Dependency] private readonly SharedMindSystem _mind = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<BloodCultRuleComponent, AfterAntagEntitySelectedEvent>(AfterEntitySelected);
+        SubscribeLocalEvent<_BloodCult.GameRule.BloodCultRuleComponent, AfterAntagEntitySelectedEvent>(AfterEntitySelected);
 
         SubscribeLocalEvent<BloodCultNarsieSummoned>(OnNarsieSummon);
 
@@ -73,7 +78,7 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
 
     protected override void Started(
         EntityUid uid,
-        BloodCultRuleComponent component,
+        _BloodCult.GameRule.BloodCultRuleComponent component,
         GameRuleComponent gameRule,
         GameRuleStartedEvent args
     )
@@ -85,7 +90,7 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
 
     protected override void AppendRoundEndText(
         EntityUid uid,
-        BloodCultRuleComponent component,
+        _BloodCult.GameRule.BloodCultRuleComponent component,
         GameRuleComponent gameRule,
         ref RoundEndTextAppendEvent args
     )
@@ -106,7 +111,7 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
 
     #region EventHandlers
 
-    private void AfterEntitySelected(Entity<BloodCultRuleComponent> ent, ref AfterAntagEntitySelectedEvent args) =>
+    private void AfterEntitySelected(Entity<_BloodCult.GameRule.BloodCultRuleComponent> ent, ref AfterAntagEntitySelectedEvent args) =>
         MakeCultist(args.EntityUid, ent);
 
     private void OnNarsieSummon(BloodCultNarsieSummoned ev)
@@ -134,9 +139,6 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
 
     private void OnCultistComponentInit(Entity<BloodCultistComponent> cultist, ref ComponentInit args)
     {
-        RaiseLocalEvent(cultist, new MoodEffectEvent("CultFocused"));
-        _languageSystem.AddLanguage(cultist, cultist.Comp.CultLanguageId);
-
         var query = QueryActiveRules();
         while (query.MoveNext(out _, out var cult, out _))
         {
@@ -159,8 +161,6 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
         RemoveAllCultItems(cultist);
         RemoveCultistAppearance(cultist);
         RemoveObjectiveAndRole(cultist.Owner);
-        RaiseLocalEvent(cultist.Owner, new MoodRemoveEffectEvent("CultFocused"));
-        _languageSystem.RemoveLanguage(cultist.Owner, cultist.Comp.CultLanguageId);
 
         if (!TryComp(cultist, out BloodCultSpellsHolderComponent? powersHolder))
             return;
@@ -266,7 +266,7 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
         return 0;
     }
 
-    public BloodCultRuleComponent? GetRule()
+    public _BloodCult.GameRule.BloodCultRuleComponent? GetRule()
     {
         var query = QueryActiveRules();
         while (query.MoveNext(out _, out var rule, out _))
@@ -312,7 +312,7 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
         return false;
     }
 
-    public void SetRandomCultTarget(BloodCultRuleComponent rule)
+    public void SetRandomCultTarget(_BloodCult.GameRule.BloodCultRuleComponent rule)
     {
         var querry = EntityManager
             .EntityQueryEnumerator<MindContainerComponent, HumanoidAppearanceComponent, ActorComponent>();
@@ -367,7 +367,7 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
         }
     }
 
-    private void MakeCultist(EntityUid cultist, Entity<BloodCultRuleComponent> rule)
+    private void MakeCultist(EntityUid cultist, Entity<_BloodCult.GameRule.BloodCultRuleComponent> rule)
     {
         if (!_mind.TryGetMind(cultist, out var mindId, out var mind))
             return;
@@ -383,7 +383,7 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
         UpdateCultistsAppearance(rule, rule.Comp.Stage);
     }
 
-    private void GetRandomRunePlacements(BloodCultRuleComponent component)
+    private void GetRandomRunePlacements(_BloodCult.GameRule.BloodCultRuleComponent component)
     {
         var allMarkers = EntityQuery<RendingRunePlacementMarkerComponent>().ToList();
         if (allMarkers.Count == 0)
@@ -431,7 +431,7 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
         RemComp<PentagramComponent>(cultist);
     }
 
-    private void UpdateCultStage(BloodCultRuleComponent cultRule)
+    private void UpdateCultStage(_BloodCult.GameRule.BloodCultRuleComponent cultRule)
     {
         var cultistsCount = cultRule.Cultists.Count;
         var prevStage = cultRule.Stage;
@@ -466,14 +466,14 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
             foreach (var cultist in cultRule.Cultists)
             {
                 if (loc != null && sound != null)
-                    _antag.SendBriefing(cultist, loc, Color.Crimson, sound);
+                    _antagSelection.SendBriefing(cultist, loc, Color.Crimson, sound);
             }
 
-            Timer.Spawn(TimeSpan.FromSeconds(10f), () => { UpdateCultistsAppearance(cultRule, cultRule.Stage, prevStage); });
+            Timer.Spawn(TimeSpan.FromSeconds(10f), () => { UpdateCultistsAppearance(cultRule, cultRule.Stage, prevStage); }); // this is awful...
         }
     }
 
-    private void UpdateCultistsAppearance(BloodCultRuleComponent cultRule, CultStage stage, CultStage prevStage = CultStage.Start)
+    private void UpdateCultistsAppearance(_BloodCult.GameRule.BloodCultRuleComponent cultRule, CultStage stage, CultStage prevStage = CultStage.Start)
     {
         switch (stage)
         {
@@ -503,10 +503,10 @@ public sealed class BloodCultRuleSystem : GameRuleSystem<BloodCultRuleComponent>
 
     /// <summary>
     ///     A crutch while we have no NORMAL voting system. The DarkRP one fucking sucks.
-    ///     
+    ///
     ///     - bro...
     /// </summary>
-    private void SelectRandomLeader(BloodCultRuleComponent cultRule)
+    private void SelectRandomLeader(_BloodCult.GameRule.BloodCultRuleComponent cultRule)
     {
         if (cultRule.LeaderSelected)
             return;

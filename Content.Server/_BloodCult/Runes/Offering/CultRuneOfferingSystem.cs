@@ -1,10 +1,10 @@
 ﻿using System.Linq;
+using Content.Server._BloodCult.GameRule;
 using Content.Server.Bible.Components;
 using Content.Server.Body.Systems;
 using Content.Server.Cuffs;
 using Content.Server.Mind;
 using Content.Server.Stunnable;
-using Content.Server.WhiteDream.BloodCult.Gamerule;
 using Content.Server.WhiteDream.BloodCult.Runes.Revive;
 using Content.Shared.Cuffs.Components;
 using Content.Shared.Damage;

@@ -12,6 +12,7 @@ using Content.Shared.Alert;
 using Content.Shared.Atmos;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Prototypes;
+using Content.Shared.Chat;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Damage;
@@ -64,7 +65,7 @@ public sealed class RespiratorSystem : EntitySystem
         if (TryComp<PullableComponent>(uid, out var pullable)
             && pullable.GrabStage == GrabStage.Suffocate)
             return false;
-        
+
         return !HasComp<KravMagaBlockedBreathingComponent>(uid);
     }
     // Goobstation end

@@ -1,12 +1,11 @@
 using Content.Server.Chat.Systems;
 using Content.Shared.Administration;
 using Content.Shared.Chat;
-using Robust.Server.Player;
 using Robust.Shared.Console;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
 
-namespace Content.Server.Chat.Commands
+namespace Content.Server._EinsteinEngines.Chat.Commands // i hate you all for making warnings pop up in rider
 {
     [AnyCommand]
     internal sealed class TSayCommand : IConsoleCommand

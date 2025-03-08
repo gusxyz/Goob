@@ -373,7 +373,9 @@ public enum InGameICChatType : byte
 {
     Speak,
     Emote,
-    Whisper
+    Whisper,
+    Telepathic,
+    CollectiveMind,
 }
 
 /// <summary>

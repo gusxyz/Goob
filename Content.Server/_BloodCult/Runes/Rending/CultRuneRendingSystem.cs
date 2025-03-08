@@ -1,8 +1,10 @@
+using Content.Server._BloodCult.GameRule;
 using Content.Server.Chat.Systems;
 using Content.Server.DoAfter;
 using Content.Server.Pinpointer;
 using Content.Server.Popups;
-using Content.Server.WhiteDream.BloodCult.Gamerule;
+using Content.Server.WhiteDream.BloodCult.Runes;
+using Content.Server.WhiteDream.BloodCult.Runes.Rending;
 using Content.Shared.DoAfter;
 using Content.Shared.WhiteDream.BloodCult.Runes;
 using Robust.Server.Audio;
@@ -11,7 +13,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes.Rending;
+namespace Content.Server._BloodCult.Runes.Rending;
 
 public sealed class CultRuneRendingSystem : EntitySystem
 {
@@ -80,14 +82,14 @@ public sealed class CultRuneRendingSystem : EntitySystem
         _audio.Stop(rune.Comp.AudioEntity);
         _appearance.SetData(rune, RendingRuneVisuals.Active, false);
 
-        if (args.Cancelled)
-        {
-            _chat.DispatchGlobalAnnouncement(
-                Loc.GetString("cult-rending-prevented"),
-                Loc.GetString("blood-cult-title"),
-                false,
-                colorOverride: Color.DarkRed);
+        if (!args.Cancelled)
             return;
+
+        _chat.DispatchGlobalAnnouncement(
+            Loc.GetString("cult-rending-prevented"),
+            Loc.GetString("blood-cult-title"),
+            false,
+            colorOverride: Color.DarkRed);
 
         var ev = new BloodCultNarsieSummoned();
         RaiseLocalEvent(ev);

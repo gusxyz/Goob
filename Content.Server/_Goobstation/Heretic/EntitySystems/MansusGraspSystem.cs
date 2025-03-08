@@ -8,6 +8,7 @@ using Content.Shared._Shitmed.Targeting;
 using Content.Shared._White.BackStab;
 using Content.Shared._White.Standing;
 using Content.Shared.Actions;
+using Content.Shared.Chat;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;

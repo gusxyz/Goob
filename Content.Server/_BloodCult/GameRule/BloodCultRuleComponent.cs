@@ -1,10 +1,9 @@
-using Content.Server.NPC.Components;
-using Content.Server.WhiteDream.BloodCult.RendingRunePlacement;
+using Content.Shared.NPC.Prototypes;
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
 using Content.Shared.WhiteDream.BloodCult.Constructs;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.WhiteDream.BloodCult.Gamerule;
+namespace Content.Server._BloodCult.GameRule;
 
 [RegisterComponent]
 public sealed partial class BloodCultRuleComponent : Component

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using Content.Server._BloodCult.GameRule;
 using Content.Server.Roles.Jobs;
-using Content.Server.WhiteDream.BloodCult.Gamerule;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Objectives.Components;
@@ -23,7 +23,7 @@ public sealed class KillTargetCultSystem : EntitySystem
 
     private void OnObjectiveAssigned(Entity<KillTargetCultComponent> ent, ref ObjectiveAssignedEvent args)
     {
-        var cultistRule = EntityManager.EntityQuery<BloodCultRuleComponent>().FirstOrDefault();
+        var cultistRule = EntityManager.EntityQuery<_BloodCult.GameRule.BloodCultRuleComponent>().FirstOrDefault();
         if (cultistRule is null)
             return;
 

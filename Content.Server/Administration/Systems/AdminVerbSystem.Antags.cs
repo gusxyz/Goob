@@ -2,7 +2,6 @@ using Content.Server._Goobstation.Wizard.Components;
 using Content.Server.Administration.Commands;
 using Content.Server.Antag;
 using Content.Server.GameTicking.Rules.Components;
-using Content.Server.WhiteDream.BloodCult.Gamerule;
 using Content.Server.Zombies;
 using Content.Shared._EinsteinEngines.Silicon.Components;
 using Content.Shared.Administration;
@@ -198,7 +197,7 @@ public sealed partial class AdminVerbSystem
             Icon = new SpriteSpecifier.Rsi(new("/Textures/Objects/Weapons/Melee/cult_dagger.rsi"), "icon"),
             Act = () =>
             {
-                _antag.ForceMakeAntag<BloodCultRuleComponent>(player, DefaultBloodCultRule);
+                _antag.ForceMakeAntag<_BloodCult.GameRule.BloodCultRuleComponent>(player, DefaultBloodCultRule);
             },
             Impact = LogImpact.High,
             Message = Loc.GetString("admin-verb-make-blood-cultist"),

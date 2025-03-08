@@ -3,9 +3,9 @@
 namespace Content.Shared.Magic.Events;
 
 [ByRefEvent]
-public readonly struct SpeakSpellEvent(EntityUid performer, string speech, InGameICChatType chatType)
+public readonly struct SpeakSpellEvent(EntityUid performer, string speech, InGameICChatType? chatType = null)
 {
     public readonly EntityUid Performer = performer;
     public readonly string Speech = speech;
-    public readonly InGameICChatType ChatType = chatType;
+    public readonly InGameICChatType? ChatType = chatType;
 }

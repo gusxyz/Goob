@@ -26,6 +26,7 @@ using Content.Shared.DoAfter;
 using Content.Shared.Examine;
 using Content.Server.DoAfter;
 using Content.Server.Popups;
+using Content.Shared.Chat;
 
 namespace Content.Server.Supermatter.Systems;
 
@@ -348,7 +349,7 @@ public sealed class SupermatterSystem : SharedSupermatterSystem
 
         sm.Damage = Math.Min(sm.DamageArchived + sm.DamageHardcap * sm.DelaminationPoint, totalDamage);
 
-        // Return the manipulated gas back to the mix 
+        // Return the manipulated gas back to the mix
         _atmosphere.Merge(mix, absorbedGas);
     }
 
@@ -472,7 +473,7 @@ public sealed class SupermatterSystem : SharedSupermatterSystem
                 return DelamType.Singulo;
         }
 
-        if (sm.Power >= sm.PowerPenaltyThreshold) 
+        if (sm.Power >= sm.PowerPenaltyThreshold)
             return DelamType.Tesla;
 
         // TODO: add resonance cascade when there's crazy conditions, or a destabilizing crystal :godo:

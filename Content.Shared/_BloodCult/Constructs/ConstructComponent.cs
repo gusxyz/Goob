@@ -26,4 +26,6 @@ public sealed partial class ConstructComponent : Component
     public float TransformAccumulator = 0;
 
     public List<EntityUid?> ActionEntities = new();
+
+    public EntProtoId SpawnOnDeathPrototype;
 }

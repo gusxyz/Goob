@@ -2,7 +2,6 @@ using System.Linq;
 using Content.Server.DoAfter;
 using Content.Server.Emp;
 using Content.Server.GameTicking;
-using Content.Server.WhiteDream.BloodCult.Gamerule;
 using Content.Shared.DoAfter;
 using Content.Shared.WhiteDream.BloodCult.Runes;
 using Robust.Server.GameObjects;
@@ -48,7 +47,7 @@ public sealed class CultRuneApocalypseSystem : EntitySystem
 
     private void OnDoAfter(Entity<CultRuneApocalypseComponent> ent, ref ApocalypseRuneDoAfter args)
     {
-        if (args.Cancelled || EntityManager.EntityQuery<BloodCultRuleComponent>().FirstOrDefault() is not { } cultRule)
+        if (args.Cancelled || EntityManager.EntityQuery<_BloodCult.GameRule.BloodCultRuleComponent>().FirstOrDefault() is not { } cultRule)
             return;
 
         ent.Comp.Used = true;

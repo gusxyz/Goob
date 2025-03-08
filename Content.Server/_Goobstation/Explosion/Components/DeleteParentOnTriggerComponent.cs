@@ -1,3 +1,5 @@
+using Content.Server.Explosion.EntitySystems;
+
 namespace Content.Server._Goobstation.Explosion.Components;
 
 /// <summary>

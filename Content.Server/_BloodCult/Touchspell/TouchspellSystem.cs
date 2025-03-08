@@ -1,8 +1,10 @@
+using Content.Server._BloodCult.GameRule;
+using Content.Server._BloodCult.Spells;
 using Content.Server.Antag;
 using Content.Server.Chat.Systems;
 using Content.Server.Hands.Systems;
 using Content.Server.Speech.EntitySystems;
-using Content.Server.WhiteDream.BloodCult.Gamerule;
+using Content.Shared.Chat;
 using Content.Shared.Interaction;
 using Content.Shared.Speech.Muting;
 using Content.Shared.StatusEffect;
@@ -91,3 +93,4 @@ public sealed partial class TouchspellSystem : EntitySystem
         args.Handled = true;
     }
 }
+

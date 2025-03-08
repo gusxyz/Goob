@@ -2,6 +2,7 @@ using Content.Server.Chat.Systems;
 using Content.Shared._Goobstation.MartialArts;
 using Content.Shared._Goobstation.MartialArts.Components;
 using Content.Shared._Goobstation.MartialArts.Events;
+using Content.Shared.Chat;
 
 namespace Content.Server._Goobstation.MartialArts;
 

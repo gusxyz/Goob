@@ -1,21 +1,18 @@
+using System.Linq;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Shared._EinsteinEngines.Abilities.Psionics;
-using Content.Shared.Bed.Sleep;
 using Content.Shared.Chat;
 using Content.Shared.Database;
-using Content.Shared.Drugs;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
-using System.Linq;
-using System.Text;
 
-namespace Content.Server.Chat;
+namespace Content.Server._EinsteinEngines.Chat;
 
 /// <summary>
 /// Extensions for Telepathic chat stuff

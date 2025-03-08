@@ -2,6 +2,7 @@
 using Content.Server.Hands.Systems;
 using Content.Server.Projectiles;
 using Content.Server.Stunnable;
+using Content.Server.WhiteDream.BloodCult.Items.BloodSpear;
 using Content.Shared.Humanoid;
 using Content.Shared.Item;
 using Content.Shared.Projectiles;
@@ -9,8 +10,9 @@ using Content.Shared.WhiteDream.BloodCult.BloodCultist;
 using Content.Shared.WhiteDream.BloodCult.Spells;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
+using Content.Shared.Projectiles;
 
-namespace Content.Server.WhiteDream.BloodCult.Items.BloodSpear;
+namespace Content.Server._BloodCult.Items.BloodSpear;
 
 public sealed class BloodSpearSystem : EntitySystem
 {
@@ -74,8 +76,11 @@ public sealed class BloodSpearSystem : EntitySystem
         var cultistCoords = _transform.GetWorldPosition(cultist);
 
         if (TryComp<EmbeddableProjectileComponent>(spearUid, out var embeddableProjectile)
-            && embeddableProjectile.Target.HasValue)
-            _projectile.RemoveEmbed(spearUid.Value, embeddableProjectile);
+            && embeddableProjectile.EmbeddedIntoUid.HasValue)
+        {
+            var ev = new SharedProjectileSystem.RemoveEmbeddedProjectileEvent();
+            RaiseLocalEvent(cultist, ev);
+        }
 
         _transform.AttachToGridOrMap(spearUid.Value, spearXform);
         _transform.SetWorldPosition(spearXform, cultistCoords);

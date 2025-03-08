@@ -23,7 +23,7 @@ public sealed class CultItemSystem : EntitySystem
     {
         SubscribeLocalEvent<CultItemComponent, ActivateInWorldEvent>(OnActivate);
         SubscribeLocalEvent<CultItemComponent, UseInHandEvent>(OnUseInHand);
-        SubscribeLocalEvent<CultItemComponent, BeforeGettingThrownEvent>(OnBeforeGettingThrown);
+        SubscribeLocalEvent<CultItemComponent, BeforeThrowEvent>(OnBeforeThrow);
         SubscribeLocalEvent<CultItemComponent, BeingEquippedAttemptEvent>(OnEquipAttempt);
         SubscribeLocalEvent<CultItemComponent, AttemptMeleeEvent>(OnMeleeAttempt);
     }
@@ -68,11 +68,11 @@ public sealed class CultItemSystem : EntitySystem
 
     private void OnMeleeAttempt(Entity<CultItemComponent> item, ref AttemptMeleeEvent args)
     {
-        if (CanUse(args.PlayerUid))
+        if (CanUse(args.User))
             return;
 
         args.Cancelled = true;
-        KnockdownAndDropItem(item, args.PlayerUid, Loc.GetString("cult-item-component-attack-fail"));
+        KnockdownAndDropItem(item, args.User, Loc.GetString("cult-item-component-attack-fail"));
     }
 
     private void KnockdownAndDropItem(Entity<CultItemComponent> item, EntityUid user, string message)

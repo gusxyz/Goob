@@ -100,13 +100,13 @@
     - CannotSuicide
     - DoorBumpOpener
   - type: Appearance
-  - type: LanguageKnowledge
-    speaks:
-    - TauCetiBasic
-    - Eldritch
-    understands:
-    - TauCetiBasic
-    - Eldritch
+#  - type: LanguageKnowledge
+#    speaks:
+#    - TauCetiBasic
+#    - Eldritch
+#    understands:
+#    - TauCetiBasic
+#    - Eldritch
   - type: LanguageSpeaker
   - type: StatusIcon
 

@@ -1,3 +1,4 @@
+using Content.Shared.Chat;
 using Content.Server.Chat.Systems;
 using Content.Shared.Magic;
 using Content.Shared.Magic.Events;
@@ -17,7 +18,9 @@ public sealed class MagicSystem : SharedMagicSystem
 
     private void OnSpellSpoken(ref SpeakSpellEvent args)
     {
-        var chatType = (Content.Server.Chat.Systems.InGameICChatType) ((int) args.ChatType);
-        _chat.TrySendInGameICMessage(args.Performer, Loc.GetString(args.Speech), chatType, false);
+        if(args.ChatType != null)
+            _chat.TrySendInGameICMessage(args.Performer, Loc.GetString(args.Speech), args.ChatType.Value, false);
+        else
+            _chat.TrySendInGameICMessage(args.Performer, Loc.GetString(args.Speech), InGameICChatType.Speak, false);
     }
 }

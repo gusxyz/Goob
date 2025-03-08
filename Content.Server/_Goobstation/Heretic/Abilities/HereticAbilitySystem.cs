@@ -33,6 +33,7 @@ using Robust.Shared.Prototypes;
 using Content.Server.Heretic.EntitySystems;
 using Content.Server._Goobstation.Heretic.EntitySystems.PathSpecific;
 using Content.Server.Heretic.Components;
+using Content.Shared.Chat;
 using Content.Shared.Hands.Components;
 using Content.Shared.Tag;
 

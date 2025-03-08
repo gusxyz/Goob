@@ -77,7 +77,7 @@
           Quantity: 7
         - ReagentId: Carbon
           Quantity: 2
-        - ReagentId: Lead 
+        - ReagentId: Lead
           Quantity: 1
 
 - type: entity
@@ -199,11 +199,6 @@
     - plasteel
     - plasteel_2
     - plasteel_3
-  # Goobstation - Custom stack splitting dialog
-  - type: UserInterface
-    interfaces:
-      enum.StackCustomSplitUiKey.Key:
-        type: StackCustomSplitBoundUserInterface
   - type: Sprite
     state: plasteel_3
     layers:
@@ -228,6 +223,8 @@
   # WD Cult start
   - type: UserInterface
     interfaces:
+      enum.StackCustomSplitUiKey.Key:
+        type: StackCustomSplitBoundUserInterface
       enum.RadialSelectorUiKey.Key:
         type: RadialSelectorMenuBUI
   - type: ActivatableUI
