@@ -7,6 +7,7 @@
   - Changelings # Goobstation - changelings
   - Heretics # Goobstation - heretics
   - Blob # Goobstation - Blob
+  - Wizard # Goobstation - Wizard
   - NuclearOperatives
   - Zombies
   - Revolutionaries
@@ -15,6 +16,7 @@
   - BloodCult # WD Cult
   - Thieves
   - Abductors # Shitmed - Abductors
+  - Bingle # Goob content
 
 - type: guideEntry
   id: Traitors

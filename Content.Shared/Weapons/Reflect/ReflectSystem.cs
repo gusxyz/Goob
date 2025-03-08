@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Content.Shared._Goobstation.Wizard.Projectiles;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Audio;
 using Content.Shared.Damage;
@@ -104,6 +105,7 @@ public sealed class ReflectSystem : EntitySystem
             // Goob edit start
             !((reflect.Reflects & reflective.Reflective) != 0x0 &&
                 _random.Prob(reflect.ReflectProb) ||
+                reflective.Reflective != ReflectType.None &&
                 (reflect.Reflects & reflective.Reflective) == 0x0 &&
                 _random.Prob(reflect.OtherTypeReflectProb)) ||
             // Goob edit end
@@ -133,6 +135,8 @@ public sealed class ReflectSystem : EntitySystem
 
         if (_netManager.IsServer)
         {
+            if (TryComp(projectile, out HomingProjectileComponent? homing)) // Goobstation
+                RemCompDeferred(projectile, homing);
             _popup.PopupEntity(Loc.GetString("reflect-shot"), user);
             _audio.PlayPvs(reflect.SoundOnReflect, user, AudioHelpers.WithVariation(0.05f, _random));
         }
@@ -191,6 +195,7 @@ public sealed class ReflectSystem : EntitySystem
             // Goob edit start
             !((reflect.Reflects & reflective) != 0x0 &&
                 _random.Prob(reflect.ReflectProb) ||
+                reflective != ReflectType.None &&
                 (reflect.Reflects & reflective) == 0x0 &&
                 _random.Prob(reflect.OtherTypeReflectProb)))
             // Goob edit end

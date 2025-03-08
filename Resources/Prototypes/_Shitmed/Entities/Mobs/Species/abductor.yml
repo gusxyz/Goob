@@ -1,15 +1,14 @@
 - type: entity
   save: false
-  name: Urist McAbductor
+  name: Urist McAlien
   parent:
   - MobBloodstream
   - MobFlammable
   - BaseMobSpecies
-  id: BaseMobAbductor
-  abstract: true
+  id: MobAbductor
   components:
   - type: Absorbable # BLOOD FOR THE BLOOD GOD
-  - type: Muted
+  - type: GlorpAccent # GoobStation - Glorpshit
   - type: HumanoidAppearance
     species: Abductor
   - type: Icon
@@ -29,6 +28,9 @@
     - CanPilot
     - FootstepSound
     - DoorBumpOpener
+    - AbductorMind
+  - type: CollectiveMind
+    defaultChannel: Abductormind
   - type: DamageVisuals
     damageOverlayGroups:
       Brute:
@@ -47,6 +49,8 @@
         Brute: -0.14
   - type: Targeting
   - type: SurgeryTarget
+  - type: Bloodstream
+    bloodReagent: AlienBlood
 
 - type: entity
   parent: BaseSpeciesDummy
