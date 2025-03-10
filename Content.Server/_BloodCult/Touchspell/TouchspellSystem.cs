@@ -1,5 +1,4 @@
 using Content.Server._BloodCult.GameRule;
-using Content.Server._BloodCult.Spells;
 using Content.Server.Antag;
 using Content.Server.Chat.Systems;
 using Content.Server.Hands.Systems;

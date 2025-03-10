@@ -108,3 +108,10 @@ public sealed partial class TeleportActionDoAfterEvent : SimpleDoAfterEvent
 
 [Serializable, NetSerializable]
 public sealed partial class BloodRitesExtractDoAfterEvent : SimpleDoAfterEvent;
+
+
+public sealed partial class CultSpellsEvent : InstantActionEvent;
+
+public sealed partial class BloodCultStunEvent : InstantActionEvent;
+
+public sealed partial class BloodCultShacklesEvent : EntityTargetActionEvent;
