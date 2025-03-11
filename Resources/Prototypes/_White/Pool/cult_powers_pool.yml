@@ -4,8 +4,8 @@
   - ActionBloodCultStun
   - ActionBloodCultTeleport
   - ActionBloodCultEmp
-  #- ActionBloodCultShadowShackles # removing them until they work
+  - ActionBloodCultShadowShackles # removing them until they work -- bro cmon this was so easy to fix LMFAO
   - ActionBloodCultTwistedConstruction
-  #- ActionBloodCultSummonCombatEquipment # OP
+  #- ActionBloodCultSummonCombatEquipment # OP -- okay? just balance it.?
   - ActionBloodCultSummonRitualDagger
   - ActionBloodCultBloodRites

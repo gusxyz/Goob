@@ -83,22 +83,18 @@
   - type: Sprite
     sprite: WhiteDream/BloodCult/actions.rsi
     state: shackles
-  - type: EntityTargetAction
-    checkCanAccess: false
-    range: 3
+  - type: InstantAction
     itemIconStyle: BigAction
     charges: 4
+    useDelay: 3
     temporary: true
-    canTargetSelf: false
-    interactOnMiss: false
-    whitelist:
-      components:
-      - Body
     icon:
       sprite: WhiteDream/BloodCult/actions.rsi
       state: shackles
-    event: !type:BloodCultShacklesEvent
-      speech: "In'totum Lig'abis!"
+    event: !type:SummonEquipmentEvent
+      prototypes:
+        hand1: ShadowShacklesAura
+      force: false
   - type: BaseCultSpell
 
 - type: entity
