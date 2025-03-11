@@ -5,7 +5,7 @@ using Content.Shared.UserInterface;
 using Content.Shared.WhiteDream.BloodCult;
 using Robust.Server.GameObjects;
 
-namespace Content.Server.WhiteDream.BloodCult.TimedFactory;
+namespace Content.Server._BloodCult.TimedFactory;
 
 public sealed class TimedFactorySystem : EntitySystem
 {

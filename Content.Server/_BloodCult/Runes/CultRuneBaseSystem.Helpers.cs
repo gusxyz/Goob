@@ -4,7 +4,7 @@ using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
 using Content.Shared.WhiteDream.BloodCult.Constructs;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes;
+namespace Content.Server._BloodCult.Runes;
 
 public sealed partial class CultRuneBaseSystem
 {

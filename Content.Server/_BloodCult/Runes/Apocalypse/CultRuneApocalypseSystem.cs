@@ -8,7 +8,7 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes.Apocalypse;
+namespace Content.Server._BloodCult.Runes.Apocalypse;
 
 public sealed class CultRuneApocalypseSystem : EntitySystem
 {

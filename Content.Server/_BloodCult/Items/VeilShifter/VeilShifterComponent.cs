@@ -1,6 +1,6 @@
 ﻿using Robust.Shared.Audio;
 
-namespace Content.Server.WhiteDream.BloodCult.Items.VeilShifter;
+namespace Content.Server._BloodCult.Items.VeilShifter;
 
 [RegisterComponent]
 public sealed partial class VeilShifterComponent : Component

@@ -11,7 +11,7 @@ using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.WhiteDream.BloodCult.Constructs.SoulShard;
+namespace Content.Server._BloodCult.Constructs.SoulShard;
 
 public sealed class SoulShardSystem : EntitySystem
 {

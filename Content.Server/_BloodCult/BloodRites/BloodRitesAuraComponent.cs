@@ -4,7 +4,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
-namespace Content.Server.WhiteDream.BloodCult.BloodRites;
+namespace Content.Server._BloodCult.BloodRites;
 
 [RegisterComponent]
 public sealed partial class BloodRitesAuraComponent : Component

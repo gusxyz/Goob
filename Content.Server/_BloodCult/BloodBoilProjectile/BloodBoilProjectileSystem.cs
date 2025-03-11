@@ -1,6 +1,6 @@
 using Robust.Shared.Physics.Events;
 
-namespace Content.Server.WhiteDream.BloodCult.BloodBoilProjectile;
+namespace Content.Server._BloodCult.BloodBoilProjectile;
 
 public sealed class BloodBoilProjectileSystem : EntitySystem
 {

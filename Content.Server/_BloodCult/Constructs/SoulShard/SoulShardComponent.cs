@@ -1,6 +1,6 @@
 ﻿using Robust.Shared.Prototypes;
 
-namespace Content.Server.WhiteDream.BloodCult.Constructs.SoulShard;
+namespace Content.Server._BloodCult.Constructs.SoulShard;
 
 [RegisterComponent]
 public sealed partial class SoulShardComponent : Component

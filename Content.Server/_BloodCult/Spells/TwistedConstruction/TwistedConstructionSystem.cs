@@ -7,7 +7,7 @@ using Content.Shared.WhiteDream.BloodCult.Components;
 using Content.Shared.WhiteDream.BloodCult.Spells;
 using Robust.Server.GameObjects;
 
-namespace Content.Server.WhiteDream.BloodCult.Spells.TwistedConstruction;
+namespace Content.Server._BloodCult.Spells.TwistedConstruction;
 
 public sealed class TwistedConstructionSystem : EntitySystem
 {

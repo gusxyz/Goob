@@ -2,7 +2,6 @@
 using System.Numerics;
 using Content.Server.Popups;
 using Content.Shared.Damage;
-using Content.Shared.Humanoid;
 using Content.Shared.Interaction;
 using Content.Shared.Maps;
 using Content.Shared.Mobs.Components;
@@ -19,7 +18,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
 
-namespace Content.Server.WhiteDream.BloodCult.Pylon;
+namespace Content.Server._BloodCult.Pylon;
 
 public sealed class PylonSystem : EntitySystem
 {

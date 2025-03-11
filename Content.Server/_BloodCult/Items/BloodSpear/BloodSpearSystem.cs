@@ -2,7 +2,6 @@
 using Content.Server.Hands.Systems;
 using Content.Server.Projectiles;
 using Content.Server.Stunnable;
-using Content.Server.WhiteDream.BloodCult.Items.BloodSpear;
 using Content.Shared.Humanoid;
 using Content.Shared.Item;
 using Content.Shared.Projectiles;

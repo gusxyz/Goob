@@ -1,6 +1,6 @@
 ﻿using Robust.Shared.Audio;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes.Summon;
+namespace Content.Server._BloodCult.Runes.Summon;
 
 [RegisterComponent]
 public sealed partial class CultRuneSummonComponent : Component

@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using System.Numerics;
+using Content.Server._BloodCult.BloodBoilProjectile;
 using Content.Server.Atmos.Components;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Body.Components;
 using Content.Server.Examine;
 using Content.Server.Popups;
 using Content.Server.Weapons.Ranged.Systems;
-using Content.Server.WhiteDream.BloodCult.BloodBoilProjectile;
 using Content.Shared.Projectiles;
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
 using Robust.Server.Audio;
@@ -14,7 +14,7 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Random;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes.BloodBoil;
+namespace Content.Server._BloodCult.Runes.BloodBoil;
 
 public sealed class CultRuneBloodBoilSystem : EntitySystem
 {

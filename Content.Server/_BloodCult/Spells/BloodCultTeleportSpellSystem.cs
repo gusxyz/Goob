@@ -1,13 +1,13 @@
-﻿using Content.Server.DoAfter;
-using Content.Server.WhiteDream.BloodCult.Runes;
-using Content.Server.WhiteDream.BloodCult.Runes.Teleport;
+﻿using Content.Server._BloodCult.Runes;
+using Content.Server._BloodCult.Runes.Teleport;
+using Content.Server.DoAfter;
 using Content.Shared.DoAfter;
 using Content.Shared.ListViewSelector;
 using Content.Shared.WhiteDream.BloodCult.Spells;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 
-namespace Content.Server.WhiteDream.BloodCult.Spells;
+namespace Content.Server._BloodCult.Spells;
 
 public sealed class BloodCultTeleportSpellSystem : EntitySystem
 {

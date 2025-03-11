@@ -1,4 +1,4 @@
-﻿namespace Content.Server.WhiteDream.BloodCult.Items.ShuttleCurse;
+﻿namespace Content.Server._BloodCult.Items.ShuttleCurse;
 
 [RegisterComponent]
 public sealed partial class ShuttleCurseProviderComponent : Component

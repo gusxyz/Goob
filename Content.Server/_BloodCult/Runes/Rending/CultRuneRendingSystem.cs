@@ -3,8 +3,6 @@ using Content.Server.Chat.Systems;
 using Content.Server.DoAfter;
 using Content.Server.Pinpointer;
 using Content.Server.Popups;
-using Content.Server.WhiteDream.BloodCult.Runes;
-using Content.Server.WhiteDream.BloodCult.Runes.Rending;
 using Content.Shared.DoAfter;
 using Content.Shared.WhiteDream.BloodCult.Runes;
 using Robust.Server.Audio;

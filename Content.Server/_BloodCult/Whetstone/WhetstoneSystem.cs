@@ -7,7 +7,7 @@ using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Shared.Player;
 
-namespace Content.Server.Whetstone;
+namespace Content.Server._BloodCult.Whetstone;
 
 public sealed class WhetstoneSystem : EntitySystem
 {

@@ -1,6 +1,6 @@
 using Content.Shared.RadialSelector;
 
-namespace Content.Server.WhiteDream.BloodCult.TimedFactory;
+namespace Content.Server._BloodCult.TimedFactory;
 
 [RegisterComponent]
 public sealed partial class TimedFactoryComponent : Component

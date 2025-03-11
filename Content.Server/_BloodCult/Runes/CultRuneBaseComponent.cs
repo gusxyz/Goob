@@ -1,10 +1,9 @@
 ﻿using Content.Shared.Chat;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Damage;
-using Content.Shared.Humanoid;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes;
+namespace Content.Server._BloodCult.Runes;
 
 [RegisterComponent]
 public sealed partial class CultRuneBaseComponent : Component

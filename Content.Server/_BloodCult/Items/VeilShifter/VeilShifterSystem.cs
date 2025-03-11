@@ -11,7 +11,7 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
 
-namespace Content.Server.WhiteDream.BloodCult.Items.VeilShifter;
+namespace Content.Server._BloodCult.Items.VeilShifter;
 
 public sealed class VeilShifterSystem : EntitySystem
 {

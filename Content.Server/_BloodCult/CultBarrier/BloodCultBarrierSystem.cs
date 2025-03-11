@@ -3,7 +3,7 @@ using Content.Shared.Interaction;
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
 using Content.Shared.WhiteDream.BloodCult.Runes;
 
-namespace Content.Server.WhiteDream.BloodCult.CultBarrier;
+namespace Content.Server._BloodCult.CultBarrier;
 
 public sealed class BloodCultBarrierSystem : EntitySystem
 {

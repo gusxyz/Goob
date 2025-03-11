@@ -7,7 +7,7 @@ using Robust.Server.Audio;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
 
-namespace Content.Server.WhiteDream.BloodCult.Items.ShuttleCurse;
+namespace Content.Server._BloodCult.Items.ShuttleCurse;
 
 public sealed class ShuttleCurseSystem : EntitySystem
 {

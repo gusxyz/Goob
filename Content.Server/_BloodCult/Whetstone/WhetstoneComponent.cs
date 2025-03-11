@@ -3,7 +3,7 @@ using Content.Shared.FixedPoint;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio;
 
-namespace Content.Server.Whetstone;
+namespace Content.Server._BloodCult.Whetstone;
 
 [RegisterComponent]
 public sealed partial class WhetstoneComponent : Component

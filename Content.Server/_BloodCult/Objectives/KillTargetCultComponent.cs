@@ -1,4 +1,4 @@
-﻿namespace Content.Server.WhiteDream.BloodCult.Objectives;
+﻿namespace Content.Server._BloodCult.Objectives;
 
 [RegisterComponent, Access(typeof(KillTargetCultSystem))]
 public sealed partial class KillTargetCultComponent : Component

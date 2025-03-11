@@ -1,13 +1,13 @@
 ﻿using System.Linq;
 using System.Numerics;
-using Content.Server.WhiteDream.BloodCult.Spells;
+using Content.Server._BloodCult.Spells;
 using Content.Shared.Alert;
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 
-namespace Content.Server.WhiteDream.BloodCult.Empower;
+namespace Content.Server._BloodCult.Empower;
 
 public sealed class BloodCultEmpoweredSystem : EntitySystem
 {

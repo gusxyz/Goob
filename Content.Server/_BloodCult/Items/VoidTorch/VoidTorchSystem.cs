@@ -9,7 +9,7 @@ using Content.Shared.WhiteDream.BloodCult.Items.VoidTorch;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 
-namespace Content.Server.WhiteDream.BloodCult.Items.VoidTorch;
+namespace Content.Server._BloodCult.Items.VoidTorch;
 
 public sealed class VoidTorchSystem : EntitySystem
 {

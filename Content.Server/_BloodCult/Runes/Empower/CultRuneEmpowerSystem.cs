@@ -1,7 +1,7 @@
-﻿using Content.Server.Popups;
-using Content.Server.WhiteDream.BloodCult.Empower;
+﻿using Content.Server._BloodCult.Empower;
+using Content.Server.Popups;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes.Empower;
+namespace Content.Server._BloodCult.Runes.Empower;
 
 public sealed class CultRuneEmpowerSystem : EntitySystem
 {

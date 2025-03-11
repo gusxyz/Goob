@@ -1,6 +1,6 @@
 ﻿using Robust.Shared.Audio;
 
-namespace Content.Server.WhiteDream.BloodCult.Items.ShuttleCurse;
+namespace Content.Server._BloodCult.Items.ShuttleCurse;
 
 [RegisterComponent]
 public sealed partial class ShuttleCurseComponent : Component

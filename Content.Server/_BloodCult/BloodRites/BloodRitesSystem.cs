@@ -25,7 +25,7 @@ using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.WhiteDream.BloodCult.BloodRites;
+namespace Content.Server._BloodCult.BloodRites;
 
 public sealed class BloodRitesSystem : EntitySystem
 {
@@ -106,9 +106,12 @@ public sealed class BloodRitesSystem : EntitySystem
             !TryComp(target, out BloodstreamComponent? bloodstream) || bloodstream.BloodSolution is not { } solution)
             return;
 
-        var extracted = solution.Comp.Solution.RemoveReagent(_bloodProto, rites.Comp.BloodExtractionAmount);
-        rites.Comp.StoredBlood += extracted;
-        _audio.PlayPvs(rites.Comp.BloodRitesAudio, rites);
+        var primaryReagent = solution.Comp.Solution.GetPrimaryReagentId();
+        if(primaryReagent == null)
+            return;
+
+        var amountRemoved = solution.Comp.Solution.RemoveReagent(primaryReagent.Value, rites.Comp.BloodExtractionAmount);
+        rites.Comp.StoredBlood += amountRemoved;
         args.Handled = true;
     }
 
@@ -264,7 +267,17 @@ public sealed class BloodRitesSystem : EntitySystem
     {
         foreach (var (_, solution) in _solutionContainer.EnumerateSolutions(ent))
         {
-            rites.Comp.StoredBlood += solution.Comp.Solution.RemoveReagent(_bloodProto, 1000);
+
+            var primaryReagent = solution.Comp.Solution.GetPrimaryReagentId();
+            if(primaryReagent == null)
+                return;
+
+            if(primaryReagent.Value.ToString() != "Blood"
+               || primaryReagent.Value.ToString() != "CopperBlood")
+                return;
+
+
+            solution.Comp.Solution.RemoveReagent(primaryReagent.Value, 1000);
             _solutionContainer.UpdateChemicals(solution);
             break;
         }

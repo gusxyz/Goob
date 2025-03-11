@@ -5,7 +5,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Objectives.Components;
 
-namespace Content.Server.WhiteDream.BloodCult.Objectives;
+namespace Content.Server._BloodCult.Objectives;
 
 public sealed class KillTargetCultSystem : EntitySystem
 {

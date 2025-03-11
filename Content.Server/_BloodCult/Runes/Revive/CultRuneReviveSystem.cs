@@ -9,7 +9,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.WhiteDream.BloodCult.BloodCultist;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes.Revive;
+namespace Content.Server._BloodCult.Runes.Revive;
 
 public sealed class CultRuneReviveSystem : EntitySystem
 {

@@ -2,7 +2,7 @@
 using Content.Shared.WhiteDream.BloodCult.Constructs.PhaseShift;
 using Robust.Server.GameObjects;
 
-namespace Content.Server.WhiteDream.BloodCult.Constructs.PhaseShift;
+namespace Content.Server._BloodCult.Constructs.PhaseShift;
 
 public sealed class PhaseShiftSystem : SharedPhaseShiftSystem
 {

@@ -1,7 +1,7 @@
 ﻿using Content.Shared.Containers.ItemSlots;
 using Content.Shared.RadialSelector;
 
-namespace Content.Server.WhiteDream.BloodCult.Constructs.Shell;
+namespace Content.Server._BloodCult.Constructs.Shell;
 
 [RegisterComponent]
 public sealed partial class ConstructShellComponent : Component

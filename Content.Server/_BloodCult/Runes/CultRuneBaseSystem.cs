@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Server._BloodCult.Empower;
 using Content.Server._BloodCult.GameRule;
 using Content.Server.Bible.Components;
 using Content.Server.Chat.Systems;
@@ -7,7 +8,6 @@ using Content.Server.Chemistry.Components;
 using Content.Server.DoAfter;
 using Content.Server.Fluids.Components;
 using Content.Server.Popups;
-using Content.Server.WhiteDream.BloodCult.Empower;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
@@ -26,7 +26,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes;
+namespace Content.Server._BloodCult.Runes;
 
 public sealed partial class CultRuneBaseSystem : EntitySystem
 {

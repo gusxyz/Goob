@@ -1,8 +1,7 @@
 ﻿using Content.Shared.Damage;
-using Content.Shared.FixedPoint;
 using Robust.Shared.Prototypes;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes.Offering;
+namespace Content.Server._BloodCult.Runes.Offering;
 
 [RegisterComponent]
 public sealed partial class CultRuneOfferingComponent : Component

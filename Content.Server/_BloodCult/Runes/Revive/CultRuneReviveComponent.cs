@@ -1,7 +1,7 @@
 ﻿using Content.Shared.Damage;
 using Content.Shared.FixedPoint;
 
-namespace Content.Server.WhiteDream.BloodCult.Runes.Revive;
+namespace Content.Server._BloodCult.Runes.Revive;
 
 [RegisterComponent]
 public sealed partial class CultRuneReviveComponent : Component

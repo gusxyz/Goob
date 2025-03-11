@@ -1,6 +1,6 @@
-﻿using Content.Server.Mind;
+﻿using Content.Server._BloodCult.Constructs.SoulShard;
+using Content.Server.Mind;
 using Content.Server.Popups;
-using Content.Server.WhiteDream.BloodCult.Constructs.SoulShard;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Mind.Components;
 using Content.Shared.RadialSelector;
@@ -9,7 +9,7 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Utility;
 
-namespace Content.Server.WhiteDream.BloodCult.Constructs.Shell;
+namespace Content.Server._BloodCult.Constructs.Shell;
 
 public sealed class ConstructShellSystem : EntitySystem
 {

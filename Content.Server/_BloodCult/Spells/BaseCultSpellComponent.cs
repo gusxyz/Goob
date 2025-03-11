@@ -1,4 +1,4 @@
-﻿namespace Content.Server.WhiteDream.BloodCult.Spells;
+﻿namespace Content.Server._BloodCult.Spells;
 
 [RegisterComponent]
 public sealed partial class BaseCultSpellComponent : Component
