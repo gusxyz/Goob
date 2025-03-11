@@ -49,26 +49,23 @@ public sealed partial class WeakToHolySystem : EntitySystem
     // passive healing on runes for aviu
     private void OnCollide(EntityUid uid, HereticRitualRuneComponent component, ref StartCollideEvent args)
     {
-        var _heretic = EnsureComp<PassiveDamageComponent>(args.OtherEntity);
+        var heretic = EnsureComp<PassiveDamageComponent>(args.OtherEntity);
 
-        if (!HasComp<WeakToHolyComponent>(args.OtherEntity) && _heretic.Damage.DamageDict.TryGetValue("Holy", out var holy)) {
+        if (!HasComp<WeakToHolyComponent>(args.OtherEntity)
+            && heretic.Damage.DamageDict.TryGetValue("Holy", out var holy))
             return;
-        }
 
-        var oldValue = _heretic.DamageCap;
-
-        _heretic.Damage.DamageDict.TryAdd("Holy", -10);
-        _heretic.DamageCap = new FixedPoint2(0); //why you no work
+        heretic.OldDamageCap = heretic.DamageCap;
+        heretic.Damage.DamageDict.TryAdd("Holy", -10);
+        heretic.DamageCap = FixedPoint2.New(0); //why you no work
         DirtyEntity(args.OtherEntity);
-
     }
 
     private void OnCollideEnd(EntityUid uid, HereticRitualRuneComponent component, ref EndCollideEvent args)
     {
-        var _heretic = EnsureComp<PassiveDamageComponent>(args.OtherEntity);
-        var oldValue = _heretic.DamageCap;
-        _heretic.DamageCap = oldValue;
-        _heretic.Damage.DamageDict.Remove("Holy");
+        var heretic = EnsureComp<PassiveDamageComponent>(args.OtherEntity);
+        heretic.DamageCap = heretic.OldDamageCap;
+        heretic.Damage.DamageDict.Remove("Holy");
         DirtyEntity(args.OtherEntity);
     }
 }
