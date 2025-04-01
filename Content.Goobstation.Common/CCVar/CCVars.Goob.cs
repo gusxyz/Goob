@@ -78,6 +78,12 @@ public sealed partial class GoobCVars
     public static readonly CVarDef<bool> SiloEnabled =
         CVarDef.Create("goob.silo_enabled", true, CVar.SERVER | CVar.REPLICATED);
 
+    /// <summary>
+    ///     Is ore silo enabled.
+    /// </summary>
+    public static readonly CVarDef<bool> ToggleSprint =
+        CVarDef.Create("control.toggle_sprint", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
     #region Player Listener
 
     /// <summary>

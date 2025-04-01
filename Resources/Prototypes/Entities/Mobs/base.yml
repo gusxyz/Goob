@@ -46,6 +46,7 @@
   - type: AnimatedEmotes
   - type: Fart
   - type: CollectiveMind # Goobstation - Starlight collective mind port
+  - type: Sprinter
 
 - type: entity
   save: false
