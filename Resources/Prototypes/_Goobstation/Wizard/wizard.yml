@@ -5,26 +5,6 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-- type: entity
-  parent: BaseMindRoleAntag
-  id: MindRoleWizard
-  name: Wizard Role
-  components:
-  - type: MindRole
-    antagPrototype: Wizard
-    exclusiveAntag: true
-  - type: WizardRole
-
-- type: entity
-  parent: BaseMindRoleAntag
-  id: MindRoleApprentice
-  name: Apprentice Role
-  components:
-  - type: MindRole
-    antagPrototype: Apprentice
-    exclusiveAntag: true
-  - type: ApprenticeRole
-
 - type: antag
   id: Wizard
   name: roles-antag-wizard-name

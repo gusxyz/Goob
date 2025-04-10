@@ -1,0 +1,9 @@
+- type: antag
+  id: Florida Man
+  name: roles-antag-florida-man-name
+  antagonist: true
+  objective: roles-antag-florida-man-objective
+# guides: [ FloridaMan ]
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 18000 # 5h # Goobstation-RoleTime

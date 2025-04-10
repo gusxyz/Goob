@@ -1,0 +1,59 @@
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleChangeling
+  name: Changeling Role
+  components:
+  - type: MindRole
+    antagPrototype: Changeling
+    exclusiveAntag: true
+  - type: ChangelingRole
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleHeretic
+  name: Heretic Role
+  components:
+  - type: MindRole
+    antagPrototype: Heretic
+    exclusiveAntag: true
+  - type: HereticRole
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleBrainwashed
+  name: Brainwashed Role
+  components:
+  - type: MindRole
+    antagPrototype: Mindcontrolled
+    exclusiveAntag: true
+  - type: MindcontrolledRole
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleWizard
+  name: Wizard Role
+  components:
+  - type: MindRole
+    antagPrototype: Wizard
+    exclusiveAntag: true
+  - type: WizardRole
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleApprentice
+  name: Apprentice Role
+  components:
+  - type: MindRole
+    antagPrototype: Apprentice
+    exclusiveAntag: true
+  - type: ApprenticeRole
+
+- type: entity
+  parent: BaseMindRoleFloridaMan
+  id: MindRoleFloridaMan
+  name: Florida Man Role
+  components:
+  - type: MindRole
+    antagPrototype: FloridaMan
+    exclusiveAntag: true
+  - type: FloridaManRole
