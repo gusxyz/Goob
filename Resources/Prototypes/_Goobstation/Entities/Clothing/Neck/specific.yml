@@ -35,3 +35,7 @@
   - type: Clothing
     sprite: _Goobstation/Clothing/Neck/Misc/nopro.rsi
     quickEquip: true
+  - type: ClothingGrantComponent
+    component:
+    - type: StationAiVision
+      range: 4

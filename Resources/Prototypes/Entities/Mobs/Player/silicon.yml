@@ -547,6 +547,11 @@
   - type: StartingMindRole
     mindRole: "MindRoleSiliconBrain"
     silent: true
+  - type: ShowHealthBars # Goobstation - AI QOL Start
+    damageContainers:
+    - Inorganic
+    - Silicon
+    - SiliconRadiation # Goobstation - AI QOL End
 
 # Hologram projection that the AI's eye tracks.
 - type: entity
@@ -571,6 +576,9 @@
     - state: ai_camera
       shader: unshaded
       map: ["base"]
+  - type: MovementSpeedModifier # Goobstation - AI QOL Start
+    baseSprintSpeed: 8
+    baseWalkSpeed: 24 # Goobstation - AI QOL End
 
 # The holographic representation of the AI that is projected from a holopad.
 - type: entity
