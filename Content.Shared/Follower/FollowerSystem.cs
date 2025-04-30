@@ -27,6 +27,7 @@
 
 using System.Linq;
 using System.Numerics;
+using Content.Goobstation.Common.AiTracker;
 using Content.Shared.Administration.Managers;
 using Content.Shared.Database;
 using Content.Shared.Follower.Components;
@@ -35,6 +36,7 @@ using Content.Shared.Hands;
 using Content.Shared.Movement.Events;
 using Content.Shared.Movement.Pulling.Events;
 using Content.Shared.Polymorph;
+using Content.Shared.Silicons.StationAi;
 using Content.Shared.Tag;
 using Content.Shared.Verbs;
 using Robust.Shared.Containers;
@@ -58,6 +60,7 @@ public sealed class FollowerSystem : EntitySystem
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] private readonly INetManager _netMan = default!;
     [Dependency] private readonly ISharedAdminManager _adminManager = default!;
+    [Dependency] private readonly SharedStationAiSystem _stationAi = default!; // GoobStation - AI QOL
 
     public override void Initialize()
     {
@@ -120,7 +123,7 @@ public sealed class FollowerSystem : EntitySystem
         if (ev.User == ev.Target || IsClientSide(ev.Target))
             return;
 
-        if (HasComp<GhostComponent>(ev.User))
+        if (HasComp<GhostComponent>(ev.User) || HasComp<StationAiTrackerComponent>(ev.User))
         {
             var verb = new AlternativeVerb()
             {
@@ -202,6 +205,9 @@ public sealed class FollowerSystem : EntitySystem
     /// <param name="entity">The entity to be followed</param>
     public void StartFollowingEntity(EntityUid follower, EntityUid entity)
     {
+        if (_stationAi.TryGetCore(follower, out var core) && core.Comp is { RemoteEntity: not null })
+            follower = core.Comp.RemoteEntity.Value;
+
         // No recursion for you
         var targetXform = Transform(entity);
         while (targetXform.ParentUid.IsValid())
@@ -211,7 +217,6 @@ public sealed class FollowerSystem : EntitySystem
 
             targetXform = Transform(targetXform.ParentUid);
         }
-
         // Cleanup old following.
         if (TryComp<FollowerComponent>(follower, out var followerComp))
         {
@@ -246,6 +251,9 @@ public sealed class FollowerSystem : EntitySystem
         }
 
         _physicsSystem.SetLinearVelocity(follower, Vector2.Zero);
+
+        if(!HasComp<GhostComponent>(follower))
+            return;
 
         EnsureComp<OrbitVisualsComponent>(follower);
 
