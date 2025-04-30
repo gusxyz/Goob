@@ -206,7 +206,10 @@ public sealed class FollowerSystem : EntitySystem
     public void StartFollowingEntity(EntityUid follower, EntityUid entity)
     {
         if (_stationAi.TryGetCore(follower, out var core) && core.Comp is { RemoteEntity: not null })
+        {
             follower = core.Comp.RemoteEntity.Value;
+            EnsureComp<StationAiTrackerComponent>(follower);
+        }
 
         // No recursion for you
         var targetXform = Transform(entity);

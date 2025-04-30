@@ -224,24 +224,29 @@ public abstract partial class SharedStationAiSystem : EntitySystem
             target = relay.RelayEntity;
         // Shitmed Change End
 
+        args.InRange = InRange(target, args.User, ent.Comp.AllowCrossGrid);
+    }
+
+    public bool InRange(EntityUid target, EntityUid user, bool allowCrossGrid)
+    {
         var targetXform = Transform(target);
 
         // No cross-grid
-        if (targetXform.GridUid != Transform(args.User).GridUid && !ent.Comp.AllowCrossGrid) // Shitmed Change
+        if (targetXform.GridUid != Transform(user).GridUid && !allowCrossGrid) // Shitmed Change
         {
-            return;
+            return false;
         }
 
         // Validate it's in camera range yes this is expensive.
         // Yes it needs optimising
         if (!_broadphaseQuery.TryComp(targetXform.GridUid, out var broadphase) || !_gridQuery.TryComp(targetXform.GridUid, out var grid))
         {
-            return;
+            return false;
         }
 
         var targetTile = Maps.LocalToTile(targetXform.GridUid.Value, grid, targetXform.Coordinates);
 
-        args.InRange = _vision.IsAccessible((targetXform.GridUid.Value, broadphase, grid), targetTile);
+        return _vision.IsAccessible((targetXform.GridUid.Value, broadphase, grid), targetTile);
     }
 
 
