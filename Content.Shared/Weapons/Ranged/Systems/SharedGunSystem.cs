@@ -637,7 +637,12 @@ public abstract partial class SharedGunSystem : EntitySystem
 
                             FireEffects(fromEffect, result.Distance, dir.Normalized().ToAngle(), hitscan, hit);
 
-                            var ev = new HitScanReflectAttemptEvent(user, gunUid, hitscan.Reflective, dir, false,damage
+                            var ev = new HitScanReflectAttemptEvent(user,
+                                gunUid,
+                                hitscan.Reflective,
+                                dir,
+                                false,
+                                hitscan.Damage);
                             RaiseLocalEvent(hit, ref ev);
 
                             if (!ev.Reflected)
@@ -852,7 +857,7 @@ public abstract partial class SharedGunSystem : EntitySystem
     /// <param name="start">Start angle in degrees</param>
     /// <param name="end">End angle in degrees</param>
     /// <param name="intervals">How many shots there are</param>
-    private Angle[] LinearSpread(Angle start, Angle end, int intervals)
+    public Angle[] LinearSpread(Angle start, Angle end, int intervals)
     {
         var angles = new Angle[intervals];
         DebugTools.Assert(intervals > 1);
