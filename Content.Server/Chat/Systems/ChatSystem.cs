@@ -111,6 +111,7 @@ using System.Collections.Immutable; // Goobstation - Starlight collective mind p
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Content.Goobstation.Shared.Identity3.Events;
 using Content.Server._Goobstation.Wizard.Systems;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
@@ -994,8 +995,10 @@ public sealed partial class ChatSystem : SharedChatSystem
             // Einstein Engines - Language begin
             if (session.AttachedEntity is not { Valid: true } playerEntity)
                 continue;
-            EntityUid listener = session.AttachedEntity.Value;
 
+            var listener = session.AttachedEntity.Value;
+            var ev = new HeardSpeechEvent(source);
+            RaiseLocalEvent(listener, ev);
             // If the channel does not support languages, or the entity can understand the message, send the original message, otherwise send the obfuscated version
             if (channel == ChatChannel.LOOC || channel == ChatChannel.Emotes || _language.CanUnderstand(listener, language.ID))
                 _chatManager.ChatMessageToOne(channel, message, wrappedMessage, source, entHideChat, session.Channel, author: author);

@@ -390,6 +390,7 @@
     prototype: Human
     requiredLegs: 2
   - type: Identity
+  - type: IdentityKnowledge
   - type: IdExaminable
   - type: Hands
   - type: ComplexInteraction
