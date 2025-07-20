@@ -8,6 +8,11 @@ namespace Content.Goobstation.Shared.Identity3;
 [RegisterComponent]
 public sealed partial class IdentityKnowledgeComponent : Component
 {
-    public readonly LRUCache<EntityUid, int> KnowledgeCache = new (5);
-    public List<EntityUid> FixedKnowledgeList;
+    [ViewVariables(VVAccess.ReadOnly)]
+    public readonly LRUCache<EntityUid, int> KnowledgeCache = new (2);
+
+    [ViewVariables(VVAccess.ReadOnly)]
+    public List<EntityUid> LongTermList;
+
+    public int LongTermRequirement = 10;
 }

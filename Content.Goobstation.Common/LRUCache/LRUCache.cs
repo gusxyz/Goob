@@ -2,10 +2,12 @@
 
 namespace Content.Goobstation.Common.LRUCache;
 
-using System.Collections.Generic;
+// Least Recently Used (LRU) Cache
+// TODO:
+// Move this to maths
+// See if I need to make any more helpers.
 
 // ReSharper disable once InconsistentNaming
-// ngl idk if this shits gonna work good
 public sealed class LRUCache<TK, TV>(int capacity) where TK : notnull
 {
     private readonly Dictionary<TK, LinkedListNode<LRUCacheItem<TK, TV>>> _cacheMap = new();
@@ -21,6 +23,12 @@ public sealed class LRUCache<TK, TV>(int capacity) where TK : notnull
         _lruList.Remove(node);
         _lruList.AddLast(node);
         return value;
+    }
+
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public LinkedList<LRUCacheItem<TK, TV>> GetList()
+    {
+        return _lruList;
     }
 
     [MethodImpl(MethodImplOptions.Synchronized)]
