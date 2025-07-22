@@ -53,3 +53,7 @@ loadout-group-brigmedic-backpack = Brigmedic backpack
 loadout-group-security-melee = Security melee weapon
 
 loadout-group-animals = Animals
+
+loadout-group-prisonguard-jumpsuit = Prison Guard Jumpsuit
+loadout-group-prisonguard-head = Prison Guard Head
+loadout-group-prisonguard-pda = Prison Guard PDA

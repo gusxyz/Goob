@@ -297,3 +297,30 @@
   - SecurityMeleeKnife
   - SecurityMeleePolyBaton
   - SecurityMeleeSpear
+
+# Prison Guard
+- type: loadoutGroup
+  id: PrisonGuardJumpsuit
+  name: loadout-group-prisonguard-jumpsuit
+  loadouts:
+  - PrisonGuardJumpsuit
+  - SecurityJumpskirt
+  - SecurityJumpsuitGrey
+  - SecurityJumpskirtGrey
+  - SeniorOfficerJumpsuit
+  - SeniorOfficerJumpskirt
+
+- type: loadoutGroup
+  id: PrisonGuardHead
+  name: loadout-group-prisonguard-head
+  minLimit: 0
+  loadouts:
+  - SecurityBeret
+  - SecurityHat
+
+- type: loadoutGroup
+  id: PrisonGuardPDA
+  name: loadout-group-prisonguard-pda
+  loadouts:
+  - PrisonGuardPDA
+  - SeniorOfficerPDA

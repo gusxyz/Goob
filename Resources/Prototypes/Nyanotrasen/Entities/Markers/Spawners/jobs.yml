@@ -27,7 +27,7 @@
     sprite: DeltaV/Markers/jobs.rsi
     layers:
       - state: green
-      - state: nyanoprisonguard
+      - state: nyanoPrisonGuard
 
 - type: entity
   id: SpawnPointMartialArtist

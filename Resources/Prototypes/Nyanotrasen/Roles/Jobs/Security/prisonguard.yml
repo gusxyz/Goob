@@ -27,6 +27,8 @@
   - Security
   - Brig
   - Maintenance
+  - External
+  - Cryogenics
 
 - type: playTimeTracker
   id: JobPrisonGuard
@@ -45,3 +47,15 @@
   innerclothingskirt: ClothingUniformJumpsuitPrisonGuard
   satchel: ClothingBackpackSatchelSecurityFilled
   duffelbag: ClothingBackpackDuffelSecurityFilled
+
+# Jumpsuit
+- type: loadout
+  id: PrisonGuardJumpsuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitPrisonGuard
+
+# PDA
+- type: loadout
+  id: PrisonGuardPDA
+  equipment:
+    id: PrisonGuardPDA

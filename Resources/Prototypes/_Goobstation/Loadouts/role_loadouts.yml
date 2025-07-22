@@ -159,3 +159,20 @@
   - Animals
   - SecurityStar
   - GroupSpeciesBreathToolSecurity
+
+- type: roleLoadout
+  id: JobPrisonGuard
+  groups:
+  - PrisonGuardHead
+  - PrisonGuardJumpsuit
+  - SecurityOuterClothing
+  - SecurityBackpack
+  - SecurityMelee
+  - SecurityShoes
+  - SecurityNeck
+  - PrisonGuardPDA
+  - SurvivalSecurity
+  - Trinkets
+  - Animals
+  - SecurityStar
+  - GroupSpeciesBreathToolSecurity
