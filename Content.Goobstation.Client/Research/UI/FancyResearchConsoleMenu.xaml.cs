@@ -9,10 +9,16 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+// SPDX-FileCopyrightText: (existing copyrights)
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 using System.Linq;
 using System.Numerics;
+using Content.Client.Lathe;
 using Content.Client.Research;
 using Content.Client.UserInterface.Controls;
+using Content.Goobstation.Common.Progression;
 using Content.Goobstation.Common.Research;
 using Content.Goobstation.Shared.Research;
 using Content.Shared.Access.Systems;
@@ -36,7 +42,7 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
     public Action<string>? OnTechnologyCardPressed;
     public Action? OnServerButtonPressed;
 
-    [Dependency] private readonly IEntityManager _entity = default!;
+    [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
 
@@ -44,38 +50,16 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
     private readonly SpriteSystem _sprite;
     private readonly AccessReaderSystem _accessReader;
 
-    /// <summary>
-    /// Console entity
-    /// </summary>
-    public EntityUid Entity;
-
-    /// <summary>
-    /// Currently selected tech
-    /// Exsists for better UI refreshing
-    /// </summary>
-    public ProtoId<TechnologyPrototype>? CurrentTech;
-
-    /// <summary>
-    /// All technologies and their availablity
-    /// </summary>
+    private EntityUid _entity;
+    private Type _nodeType = default!;
+    private Type _disciplineType = default!;
+    private ProtoId<IProgressionNode>? _currentNode;
     public Dictionary<string, ResearchAvailability> List = new();
-
-    /// <summary>
-    /// Cached research points
-    /// </summary>
     public int Points = 0;
-
-    /// <summary>
-    /// Is tech currently being dragged
-    /// </summary>
     private bool _draggin;
-
-    /// <summary>
-    /// Global position that all tech relates to.
-    /// For dragging mostly
-    /// </summary>
-    private Vector2 _position = new Vector2(45, 250);
+    private Vector2 _position = new(45, 250);
     private float _zoom = 1f;
+    private bool _isInitialized;
     private const float MinZoom = 0.5f;
     private const float MaxZoom = 2f;
     private const float ZoomSpeed = 0.125f;
@@ -84,9 +68,9 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
-        _research = _entity.System<ResearchSystem>();
-        _sprite = _entity.System<SpriteSystem>();
-        _accessReader = _entity.System<AccessReaderSystem>();
+        _research = _entityManager.System<ResearchSystem>();
+        _sprite = _entityManager.System<SpriteSystem>();
+        _accessReader = _entityManager.System<AccessReaderSystem>();
         StaticSprite.SetFromSpriteSpecifier(new SpriteSpecifier.Rsi(new("_Goobstation/Interface/rnd-static.rsi"), "static"));
         StaticSprite.DisplayRect.CanShrink = true;
         StaticSprite.DisplayRect.Stretch = TextureRect.StretchMode.Scale;
@@ -100,32 +84,46 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
         Recenter();
     }
 
+    public void Initialize(string nodeTypeId, string disciplineTypeId)
+    {
+        if (_isInitialized)
+            return;
+
+        _nodeType = _prototype.GetKindType(nodeTypeId);
+        _disciplineType = _prototype.GetKindType(disciplineTypeId);
+        _isInitialized = true;
+    }
+
     public void SetEntity(EntityUid entity)
-        => Entity = entity;
+        => _entity = entity;
 
     public void UpdatePanels(Dictionary<string, ResearchAvailability> dict)
     {
+        if (!_isInitialized)
+            return;
+
         DragContainer.RemoveAllChildren();
         List = dict;
 
         foreach (var tech in List)
         {
             var proto = _prototype.Index<TechnologyPrototype>(tech.Key);
-
             var control = new FancyResearchConsoleItem(proto, _sprite, tech.Value);
             DragContainer.AddChild(control);
-
-            // Set position for all tech, relating to _position
             LayoutContainer.SetPosition(control, _position + proto.Position * 150 * _zoom);
-            control.SelectAction += SelectTech;
+            control.SelectAction += SelectNode;
 
-            if (tech.Key == CurrentTech)
-                SelectTech(proto, tech.Value);
+            if (tech.Key.Equals(_currentNode?.Id))
+                SelectNode(proto, tech.Value);
         }
     }
 
+    // still needs genericization  i think
     public void UpdateInformationPanel(int points)
     {
+        if (!_isInitialized)
+            return;
+
         Points = points;
 
         var amountMsg = new FormattedMessage();
@@ -133,13 +131,13 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
             ("points", points)));
         ResearchAmountLabel.SetMessage(amountMsg);
 
-        if (!_entity.TryGetComponent(Entity, out TechnologyDatabaseComponent? database))
+        if (!_entityManager.TryGetComponent(_entity, out TechnologyDatabaseComponent? database))
             return;
 
         TierDisplayContainer.RemoveAllChildren();
         foreach (var disciplineId in database.SupportedDisciplines)
         {
-            var discipline = _prototype.Index<TechDisciplinePrototype>(disciplineId);
+            var discipline = _prototype.Index(disciplineId);
             var tier = _research.GetTierCompletionPercentage(database, discipline, _prototype);
 
             // i'm building the small-ass control here to spare me some mild annoyance in making a new file
@@ -160,7 +158,7 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
                     label,
                     new Control
                     {
-                        MinWidth = 10
+                        MinWidth = 10,
                     }
                 }
             };
@@ -236,26 +234,66 @@ public sealed partial class FancyResearchConsoleMenu : FancyWindow
     #endregion
 
     /// <summary>
-    /// Selects a tech prototype and opens info panel
+    /// Selects a progression node and opens the detailed info panel for it.
+    /// This method now acts as the "Controller" that prepares generic data for the "View" (the Info Panel).
     /// </summary>
-    /// <param name="proto">Tech proto</param>
-    /// <param name="availability">Tech availablity</param>
-    public void SelectTech(TechnologyPrototype proto, ResearchAvailability availability)
+    private void SelectNode(IProgressionNode proto, ResearchAvailability availability)
     {
         InfoContainer.RemoveAllChildren();
         if (!_player.LocalEntity.HasValue)
             return;
 
-        CurrentTech = proto.ID;
-        var control = new FancyTechnologyInfoPanel(proto, _accessReader.IsAllowed(_player.LocalEntity.Value, Entity), availability, _sprite);
+        _currentNode = new ProtoId<IProgressionNode>(proto.ID);
+        var unlocks = new List<ProgressionUnlock>();
+        var prerequisites = new List<ProgressionUnlock>();
+        if (proto is TechnologyPrototype techProto)
+        {
+            ShowResearchPanel(proto, techProto, ref unlocks, ref prerequisites);
+        }
+
+        var control = new FancyTechnologyInfoPanel(
+            proto,
+            _accessReader.IsAllowed(_player.LocalEntity.Value, _entity),
+            availability,
+            unlocks,
+            prerequisites,
+            _prototype,
+            _sprite,
+            _disciplineType);
         control.BuyAction += args => OnTechnologyCardPressed?.Invoke(args.ID);
         InfoContainer.AddChild(control);
+    }
+
+    private void ShowResearchPanel(IProgressionNode proto, TechnologyPrototype techProto, ref List<ProgressionUnlock> unlocks, ref List<ProgressionUnlock> prereqs)
+    {
+        _nodeType = typeof(TechnologyPrototype);
+        _disciplineType = typeof(TechDisciplinePrototype);
+        prereqs = proto.Prerequisites
+            .Select(prereqId => _prototype.Index<TechnologyPrototype>(prereqId))
+            .Select(prereqProto => new ProgressionUnlock(
+                Loc.GetString(prereqProto.Name),
+                Loc.GetString(prereqProto.Description),
+                prereqProto.Icon))
+            .ToList();
+        var latheSystem = _entityManager.System<LatheSystem>();
+        foreach (var recipeId in techProto.RecipeUnlocks)
+        {
+            if (!_prototype.TryIndex(recipeId, out var recipeProto) ||
+                recipeProto.Result is not { } resultId ||
+                !_prototype.TryIndex<EntityPrototype>(resultId, out var resultProto))
+                continue;
+            unlocks.Add(new ProgressionUnlock(
+                latheSystem.GetRecipeName(recipeProto),
+                latheSystem.GetRecipeDescription(recipeProto),
+                new SpriteSpecifier.EntityPrototype(resultProto.ID)
+            ));
+        }
     }
 
     /// <summary>
     /// Sets <see cref="_position"/> to its default value
     /// </summary>
-    public void Recenter()
+    private void Recenter()
     {
         _position = new(45, 250);
         foreach (var item in DragContainer.Children)

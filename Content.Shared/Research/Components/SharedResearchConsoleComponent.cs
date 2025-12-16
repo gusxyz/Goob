@@ -18,6 +18,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Goobstation.Common.Progression;
 using Content.Goobstation.Common.Research;
 using Robust.Shared.Serialization;
 
@@ -46,19 +47,23 @@ namespace Content.Shared.Research.Components
 
     }
 
+    // Goobstation Progression Tree Basics
     [Serializable, NetSerializable]
-    public sealed class ResearchConsoleBoundInterfaceState : BoundUserInterfaceState
+    public sealed class ResearchConsoleBoundInterfaceState(
+        int points,
+        Dictionary<string, ResearchAvailability> researches,
+        string protTypeId,
+        string disciplineTypeid,
+        List<DisciplineState> disciplineStates) : ProgressionBoundInterfaceState(protTypeId, disciplineTypeid, disciplineStates)
     {
-        public int Points;
+        public int Points = points;
 
         /// <summary>
         /// Goobstation field - all researches and their availablities
         /// </summary>
-        public Dictionary<string, ResearchAvailability> Researches;
-        public ResearchConsoleBoundInterfaceState(int points, Dictionary<string, ResearchAvailability> researches)   // Goobstation R&D console rework = researches field
-        {
-            Points = points;
-            Researches = researches;    // Goobstation R&D console rework
-        }
+        public Dictionary<string, ResearchAvailability> Researches = researches; // Goobstation R&D console rework
+
+        // Goobstation R&D console rework = researches field
     }
+    // Goobstation Progression Tree Basics
 }

@@ -22,6 +22,8 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using System.Linq;
+using Content.Goobstation.Common.Progression;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -31,7 +33,7 @@ namespace Content.Shared.Research.Prototypes;
 /// This is a prototype for a technology that can be unlocked.
 /// </summary>
 [Prototype]
-public sealed partial class TechnologyPrototype : IPrototype
+public sealed partial class TechnologyPrototype : IProgressionNode
 {
     /// <inheritdoc/>
     [IdDataField]
@@ -94,12 +96,21 @@ public sealed partial class TechnologyPrototype : IPrototype
     [DataField]
     public IReadOnlyList<GenericUnlock> GenericUnlocks = new List<GenericUnlock>();
 
-    /// <summary>
-    /// Goobstation R&D console rework field
-    /// Position of this tech in console menu
-    /// </summary>
+    // Goob - R&D Genericize Start
     [DataField(required: true)]
     public Vector2i Position { get; private set; }
+
+    [DataField]
+    public LocId Description { get; set; }
+
+    ProtoId<IDiscipline> IProgressionNode.Discipline => new(Discipline.Id);
+    LocId IProgressionNode.Name => Name;
+    LocId IProgressionNode.Description => Description;
+    SpriteSpecifier IProgressionNode.Icon => Icon;
+    int IProgressionNode.Cost => Cost;
+    HashSet<string> IProgressionNode.Prerequisites => new(TechnologyPrerequisites.Select(p => p.Id));
+    Vector2i IProgressionNode.Position => Position;
+    // Goob - R & D Genericize End
 }
 
 [DataDefinition]

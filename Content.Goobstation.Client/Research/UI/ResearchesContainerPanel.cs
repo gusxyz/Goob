@@ -30,10 +30,10 @@ public sealed partial class ResearchesContainerPanel : LayoutContainer
             if (child is not FancyResearchConsoleItem item)
                 continue;
 
-            if (item.Prototype.TechnologyPrerequisites.Count <= 0)
+            if (item.Prototype.Prerequisites.Count <= 0)
                 continue;
 
-            var list = Children.Where(x => x is FancyResearchConsoleItem second && item.Prototype.TechnologyPrerequisites.Contains(second.Prototype.ID));
+            var list = Children.Where(x => x is FancyResearchConsoleItem second && item.Prototype.Prerequisites.Contains(second.Prototype.ID));
             foreach (var second in list)
             {
 
@@ -43,8 +43,8 @@ public sealed partial class ResearchesContainerPanel : LayoutContainer
                 if (second.PixelPosition.Y != item.PixelPosition.Y)
                 {
 
-                    handle.DrawLine(startCoords, new(endCoords.X, startCoords.Y), Color.White);
-                    handle.DrawLine(new(endCoords.X, startCoords.Y), endCoords, Color.White);
+                    handle.DrawLine(startCoords, new Vector2(endCoords.X, startCoords.Y), Color.White);
+                    handle.DrawLine(new Vector2(endCoords.X, startCoords.Y), endCoords, Color.White);
                 }
                 else
                 {

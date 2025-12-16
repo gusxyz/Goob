@@ -34,6 +34,7 @@ using Content.Shared.Research.Prototypes;
 using Content.Goobstation.Common.Pirates;
 using Content.Goobstation.Common.Research; // R&D Console Rework
 using System.Linq;
+using Content.Goobstation.Common.Progression;
 using Robust.Shared.Prototypes; // R&D Console Rework
 
 namespace Content.Server.Research.Systems;
@@ -113,14 +114,17 @@ public sealed partial class ResearchSystem
             return;
 
         // R&D Console Rework Start
-        var allTechs = PrototypeManager.EnumeratePrototypes<TechnologyPrototype>().ToList();
+        var allTechs = PrototypeManager.EnumeratePrototypes<TechnologyPrototype>().Where(p => !p.Hidden).ToList();
         Dictionary<string, ResearchAvailability> techList;
+        var disciplineStates = new List<DisciplineState>();
         var points = 0;
 
         if (TryGetClientServer(uid, out var serverUid, out var server, clientComponent) &&
             TryComp<TechnologyDatabaseComponent>(serverUid, out var db))
         {
             var unlockedTechs = new HashSet<ProtoId<TechnologyPrototype>>(db.UnlockedTechnologies);
+
+            // Calculate Availability
             techList = allTechs.ToDictionary(
                 proto => proto.ID,
                 proto =>
@@ -131,21 +135,45 @@ public sealed partial class ResearchSystem
                     var prereqsMet = proto.TechnologyPrerequisites.All(p => unlockedTechs.Contains(p));
                     var canAfford = server.Points >= proto.Cost;
 
-                    return prereqsMet ?
-                        (canAfford ? ResearchAvailability.Available : ResearchAvailability.PrereqsMet)
+                    return prereqsMet
+                        ? (canAfford ? ResearchAvailability.Available : ResearchAvailability.PrereqsMet)
                         : ResearchAvailability.Unavailable;
                 });
 
-            if (clientComponent != null)
-                points = clientComponent.ConnectedToServer ? server.Points : 0;
+            points = clientComponent.ConnectedToServer ? server.Points : 0;
+
+            foreach (var disciplineId in db.SupportedDisciplines)
+            {
+                if (!PrototypeManager.TryIndex(disciplineId, out var discipline))
+                    continue;
+
+                var disciplineTechs = allTechs.Where(p => p.Discipline == discipline.ID).ToList();
+                var unlockedCount = disciplineTechs.Count(t => unlockedTechs.Contains(t.ID));
+                var totalCount = disciplineTechs.Count;
+                var percent = totalCount == 0 ? 0 : (float)unlockedCount / totalCount;
+
+                var state = new DisciplineState(
+                    new ProtoId<IDiscipline>(discipline.ID),
+                    Loc.GetString(discipline.UiName),
+                    discipline.Icon,
+                    $"{percent:P0}"
+                );
+                disciplineStates.Add(state);
+            }
         }
         else
         {
             techList = allTechs.ToDictionary(proto => proto.ID, _ => ResearchAvailability.Unavailable);
         }
 
-        _uiSystem.SetUiState(uid, ResearchConsoleUiKey.Key,
-            new ResearchConsoleBoundInterfaceState(points, techList));
+        // ReSharper disable twice BadListLineBreaks
+        _uiSystem.SetUiState(uid, ResearchConsoleUiKey.Key, new ResearchConsoleBoundInterfaceState(
+            points,
+            techList,
+            component.PrototypeType,
+            component.DisciplineType,
+            disciplineStates
+        ));
         // R&D Console Rework End
     }
 

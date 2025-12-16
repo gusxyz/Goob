@@ -24,9 +24,11 @@ using Content.Server.Radio.EntitySystems;
 using Content.Shared.Access.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Research.Components;
+using Content.Shared.Research.Prototypes;
 using Content.Shared.Research.Systems;
 using JetBrains.Annotations;
 using Robust.Server.GameObjects;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Server.Research.Systems

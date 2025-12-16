@@ -12,6 +12,7 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+using Content.Goobstation.Common.Progression;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -22,7 +23,7 @@ namespace Content.Shared.Research.Prototypes;
 /// that governs how <see cref="TechnologyPrototype"/>s are unlocked.
 /// </summary>
 [Prototype]
-public sealed partial class TechDisciplinePrototype : IPrototype
+public sealed partial class TechDisciplinePrototype : IDiscipline
 {
     /// <inheritdoc/>
     [IdDataField]
@@ -66,4 +67,11 @@ public sealed partial class TechDisciplinePrototype : IPrototype
     /// </summary>
     [DataField(required: true)]
     public string UiName = string.Empty;
+
+    string IDiscipline.Name => Name;
+    Color IDiscipline.Color => Color;
+    SpriteSpecifier IDiscipline.Icon => Icon;
+    Dictionary<int, float> IDiscipline.TierPrerequisites => TierPrerequisites;
+    int IDiscipline.LockoutTier => LockoutTier;
+    string IDiscipline.UiName => UiName;
 }
