@@ -182,8 +182,7 @@ public partial class TraumaSystem
         if (!Resolve(boneEnt, ref boneComp))
             return false;
 
-        if (_net.IsServer)
-            AddTrauma(boneEnt, woundable, inflicter, TraumaType.BoneDamage, inflicterSeverity);
+        AddTrauma(boneEnt, woundable, inflicter, TraumaType.BoneDamage, inflicterSeverity);
 
         ApplyDamageToBone(boneEnt, inflicterSeverity, boneComp);
 

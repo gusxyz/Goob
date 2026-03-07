@@ -58,6 +58,5 @@ public sealed class TargetingSystem : SharedTargetingSystem
             return;
 
         Dirty(uid, component);
-        RaiseNetworkEvent(new TargetIntegrityChangeEvent(GetNetEntity(uid)), uid);
     }
 }

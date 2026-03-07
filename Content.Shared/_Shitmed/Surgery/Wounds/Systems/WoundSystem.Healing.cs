@@ -395,18 +395,12 @@ public partial class WoundSystem
 
     public bool TryAddHealingRateMultiplier(EntityUid owner, EntityUid woundable, string identifier, FixedPoint2 change, WoundableComponent? component = null)
     {
-        if (!Resolve(woundable, ref component) || !_net.IsServer)
-            return false;
-
-        return component.HealingMultipliers.TryAdd(owner, new WoundableHealingMultiplier(change, identifier));
+        return Resolve(woundable, ref component) && component.HealingMultipliers.TryAdd(owner, new WoundableHealingMultiplier(change, identifier));
     }
 
     public bool TryRemoveHealingRateMultiplier(EntityUid owner, EntityUid woundable, WoundableComponent? component = null)
     {
-        if (!Resolve(woundable, ref component)  || !_net.IsServer)
-            return false;
-
-        return component.HealingMultipliers.Remove(owner);
+        return Resolve(woundable, ref component) && component.HealingMultipliers.Remove(owner);
     }
 
     public bool CanHealWound(EntityUid wound, WoundComponent? comp = null, bool ignoreBlockers = false)

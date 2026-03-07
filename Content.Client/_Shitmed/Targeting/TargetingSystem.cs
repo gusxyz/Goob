@@ -35,7 +35,7 @@ public sealed class TargetingSystem : SharedTargetingSystem
         SubscribeLocalEvent<TargetingComponent, LocalPlayerDetachedEvent>(HandlePlayerDetached);
         SubscribeLocalEvent<TargetingComponent, ComponentStartup>(OnTargetingStartup);
         SubscribeLocalEvent<TargetingComponent, ComponentShutdown>(OnTargetingShutdown);
-        SubscribeNetworkEvent<TargetIntegrityChangeEvent>(OnTargetIntegrityChange);
+        SubscribeLocalEvent<TargetingComponent, AfterAutoHandleStateEvent>(OnTargetingStateChanged);
 
         CommandBinds.Builder
         .Bind(ContentKeyFunctions.TargetHead,
@@ -61,6 +61,14 @@ public sealed class TargetingSystem : SharedTargetingSystem
         .Bind(ContentKeyFunctions.TargetRightFoot,
             InputCmdHandler.FromDelegate((session) => HandleTargetChange(session, TargetBodyPart.RightFoot)))
         .Register<SharedTargetingSystem>();
+    }
+
+    private void OnTargetingStateChanged(Entity<TargetingComponent> ent, ref AfterAutoHandleStateEvent args)
+    {
+        if (!_playerManager.LocalEntity.Equals(ent.Owner))
+            return;
+
+        PartStatusUpdate?.Invoke(ent.Comp);
     }
 
     private void HandlePlayerAttached(EntityUid uid, TargetingComponent component, LocalPlayerAttachedEvent args)
@@ -93,22 +101,10 @@ public sealed class TargetingSystem : SharedTargetingSystem
         PartStatusShutdown?.Invoke();
     }
 
-    private void OnTargetIntegrityChange(TargetIntegrityChangeEvent args)
-    {
-        if (!TryGetEntity(args.Uid, out var uid)
-            || !_playerManager.LocalEntity.Equals(uid)
-            || !TryComp(uid, out TargetingComponent? component)
-            || !args.RefreshUi)
-            return;
-
-        PartStatusUpdate?.Invoke(component);
-    }
-
     private void HandleTargetChange(ICommonSession? session, TargetBodyPart target)
     {
-        if (session == null
-            || session.AttachedEntity is not { } uid
-            || !TryComp<TargetingComponent>(uid, out var targeting))
+        if (session is not { AttachedEntity: { } uid }
+            || !TryComp<TargetingComponent>(uid, out _))
             return;
 
         TargetChange?.Invoke(target);

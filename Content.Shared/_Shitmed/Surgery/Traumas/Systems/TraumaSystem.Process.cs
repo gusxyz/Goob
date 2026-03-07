@@ -104,16 +104,15 @@ public partial class TraumaSystem
 
         foreach (var trauma in GetAllWoundTraumas(inflicter, inflicter))
         {
-            if (TraumasBlockingHealing.Contains(trauma.Comp.TraumaType))
-            {
-                if (trauma.Comp.TraumaType == TraumaType.BoneDamage
-                    && args.Woundable.Comp.Bone.ContainedEntities.FirstOrNull() is { } bone
-                    && TryComp(bone, out BoneComponent? boneComp)
-                    && boneComp.BoneSeverity != BoneSeverity.Broken)
-                    continue;
+            if (!TraumasBlockingHealing.Contains(trauma.Comp.TraumaType))
+                continue;
+            if (trauma.Comp.TraumaType == TraumaType.BoneDamage
+                && args.Woundable.Comp.Bone.ContainedEntities.FirstOrNull() is { } bone
+                && TryComp(bone, out BoneComponent? boneComp)
+                && boneComp.BoneSeverity != BoneSeverity.Broken)
+                continue;
 
-                args.Cancelled = true;
-            }
+            args.Cancelled = true;
         }
     }
 
@@ -152,15 +151,14 @@ public partial class TraumaSystem
             if (trauma.Comp.TraumaType != traumaType && traumaType != null)
                 continue;
 
-            if (!showAll)
-            {
-                // TODO: Fill this with other blocking traumas.
-                if (trauma.Comp.TraumaType == TraumaType.BoneDamage
-                    && (woundableComp.Bone.ContainedEntities.FirstOrNull() is not { } bone
+            if (showAll)
+                return true;
+            // TODO: Fill this with other blocking traumas.
+            if (trauma.Comp.TraumaType == TraumaType.BoneDamage
+                && (woundableComp.Bone.ContainedEntities.FirstOrNull() is not { } bone
                     || !TryComp(bone, out BoneComponent? boneComp)
                     || boneComp.BoneSeverity != BoneSeverity.Broken))
-                    continue;
-            }
+                continue;
 
             return true;
         }
@@ -448,7 +446,7 @@ public partial class TraumaSystem
                 0,
                 1);
 
-        return _random.Prob((float) chance);
+        return _random.Prob((float) chance); // fix randoms
     }
 
     public bool RandomOrganTraumaChance(
@@ -486,6 +484,8 @@ public partial class TraumaSystem
                 - deduction + woundInflicter.Comp.TraumasChances[TraumaType.OrganDamage],
                 0,
                 1);
+
+        // make this all predicted random.
 
         return _random.Prob((float) chance);
     }
@@ -586,30 +586,26 @@ public partial class TraumaSystem
             return trauma;
         }
 
-        var traumaEnt = Spawn(inflicter.Comp.TraumaPrototypes[traumaType]);
-        var traumaComp = EnsureComp<TraumaComponent>(traumaEnt);
-
+        if(!PredictedTrySpawnInContainer(inflicter.Comp.TraumaPrototypes[traumaType].Id, holdingWoundable,  inflicter.Comp.TraumaContainer.ID, out var traumaEnt))
+            return EntityUid.Invalid;
+        var traumaComp = EnsureComp<TraumaComponent>(traumaEnt.Value);
         traumaComp.TraumaSeverity = severity;
-
         traumaComp.TraumaTarget = target;
-
         if (targetType.HasValue)
             traumaComp.TargetType = targetType.Value;
 
         traumaComp.HoldingWoundable = holdingWoundable;
 
-        _container.Insert(traumaEnt, inflicter.Comp.TraumaContainer);
-
         // Raise the event on the woundable
-        var ev = new TraumaInducedEvent((traumaEnt, traumaComp), target, severity, traumaType);
+        var ev = new TraumaInducedEvent((traumaEnt.Value, traumaComp), target, severity, traumaType);
         RaiseLocalEvent(holdingWoundable, ref ev);
 
         // Raise the event on the inflicter (wound)
-        var ev1 = new TraumaInducedEvent((traumaEnt, traumaComp), target, severity, traumaType);
+        var ev1 = new TraumaInducedEvent((traumaEnt.Value, traumaComp), target, severity, traumaType);
         RaiseLocalEvent(inflicter, ref ev1);
 
-        Dirty(traumaEnt, traumaComp);
-        return traumaEnt;
+        Dirty(traumaEnt.Value, traumaComp);
+        return traumaEnt.Value;
     }
 
     public void RemoveTrauma(
@@ -642,8 +638,7 @@ public partial class TraumaSystem
             }
         }
 
-        if (_net.IsServer)
-            QueueDel(trauma);
+        PredictedQueueDel(trauma.Owner);
     }
 
     #endregion

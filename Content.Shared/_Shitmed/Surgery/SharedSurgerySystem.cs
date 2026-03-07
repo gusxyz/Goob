@@ -459,11 +459,11 @@ public abstract partial class SharedSurgerySystem : EntitySystem
         // This (for now) assumes that surgery entity data remains unchanged between client
         // and server
         // if it does not you get the bullet
-        if (!_surgeries.TryGetValue(surgeryOrStep, out var ent) || TerminatingOrDeleted(ent))
-        {
-            ent = Spawn(surgeryOrStep, MapCoordinates.Nullspace);
-            _surgeries[surgeryOrStep] = ent;
-        }
+        if (_surgeries.TryGetValue(surgeryOrStep, out var ent) && !TerminatingOrDeleted(ent))
+            return ent;
+
+        ent = PredictedSpawnAtPosition(surgeryOrStep, _transform.ToCoordinates(MapCoordinates.Nullspace));
+        _surgeries[surgeryOrStep] = ent;
 
         return ent;
     }

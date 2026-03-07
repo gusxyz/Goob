@@ -640,15 +640,11 @@ public partial class PainSystem
 
         targeting.BodyStatus = _wound.GetWoundableStatesOnBodyPainFeels(bodyPart.Body.Value);
         Dirty(bodyPart.Body.Value, targeting);
-
-        if (_net.IsServer)
-            RaiseNetworkEvent(new TargetIntegrityChangeEvent(GetNetEntity(bodyPart.Body.Value)), bodyPart.Body.Value);
     }
 
     private void UpdateDamage(EntityUid nerveSysEnt, NerveSystemComponent nerveSys)
     {
-        if (!_timing.IsFirstTimePredicted
-            || TerminatingOrDeleted(nerveSysEnt)
+        if  (TerminatingOrDeleted(nerveSysEnt)
             || !TryComp<OrganComponent>(nerveSysEnt, out var nerveSysOrgan)
             || nerveSysOrgan.Body is not { } body
             || _mobState.IsDead(body)

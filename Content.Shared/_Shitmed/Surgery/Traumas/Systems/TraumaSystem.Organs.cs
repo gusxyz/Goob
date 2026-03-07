@@ -121,8 +121,7 @@ public partial class TraumaSystem
         _audio.PlayPvs(args.Organ.Comp.OrganDestroyedSound, body.Value);
         _body.RemoveOrgan(args.Organ, args.Organ.Comp);
 
-        if (_net.IsServer)
-            QueueDel(args.Organ);
+        PredictedQueueDel(args.Organ.Owner);
     }
 
     #endregion

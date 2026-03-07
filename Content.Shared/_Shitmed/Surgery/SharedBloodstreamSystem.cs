@@ -18,6 +18,7 @@ using Robust.Shared.Utility;
 using Robust.Shared.Audio;
 using Content.Shared._Shitmed.Medical.Surgery.Consciousness.Systems;
 using Content.Shared.Body.Components;
+using Robust.Shared.Player;
 
 // ReSharper disable once CheckNamespace
 namespace Content.Shared.Body.Systems;
@@ -359,6 +360,8 @@ public abstract partial class SharedBloodstreamSystem
         _popup.PopupPredicted(Loc.GetString("bloodstream-component-wounds-cauterized"),
             bodyPart.Body.Value,
             bodyPart.Body.Value,
+            Filter.Entities(bodyPart.Body.Value),
+            true,
             PopupType.Medium);
     }
 

@@ -113,9 +113,6 @@ public sealed partial class WoundSystem : EntitySystem
         base.Update(frameTime);
         _woundJobQueue.Process();
 
-        if (!_timing.IsFirstTimePredicted)
-            return;
-
         // If this still causes lag, we go with the nuclear option of also checking for ConsciousnessComponent :niceportrait:
         using var query = EntityQueryEnumerator<BodyComponent, DamageableComponent>();
         while (query.MoveNext(out var ent, out var body, out var damageable))

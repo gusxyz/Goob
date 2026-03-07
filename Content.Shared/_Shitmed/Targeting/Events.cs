@@ -9,25 +9,15 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._Shitmed.Targeting.Events;
 
 [Serializable, NetSerializable]
-public sealed class TargetChangeEvent : EntityEventArgs
+public sealed class TargetChangeEvent(NetEntity uid, TargetBodyPart bodyPart) : EntityEventArgs
 {
-    public NetEntity Uid { get; }
-    public TargetBodyPart BodyPart { get; }
-    public TargetChangeEvent(NetEntity uid, TargetBodyPart bodyPart)
-    {
-        Uid = uid;
-        BodyPart = bodyPart;
-    }
+    public NetEntity Uid { get; } = uid;
+    public TargetBodyPart BodyPart { get; } = bodyPart;
 }
 
 [Serializable, NetSerializable]
-public sealed class TargetIntegrityChangeEvent : EntityEventArgs
+public sealed class TargetIntegrityChangeEvent(NetEntity uid, bool refreshUi = true) : EntityEventArgs
 {
-    public NetEntity Uid { get; }
-    public bool RefreshUi { get; }
-    public TargetIntegrityChangeEvent(NetEntity uid, bool refreshUi = true)
-    {
-        Uid = uid;
-        RefreshUi = refreshUi;
-    }
+    public NetEntity Uid { get; } = uid;
+    public bool RefreshUi { get; } = refreshUi;
 }

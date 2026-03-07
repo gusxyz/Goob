@@ -14,7 +14,7 @@ namespace Content.Shared._Shitmed.Targeting;
 /// <summary>
 /// Controls entity limb targeting for actions.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
 public sealed partial class TargetingComponent : Component
 {
     [ViewVariables, AutoNetworkedField]

@@ -171,7 +171,7 @@ public sealed partial class WoundableComponent : Component
     /// Whether this woundable's bone is exposed
     /// </summary>
     [DataField]
-    public bool IsBoneExposed = false;
+    public bool IsBoneExposed;
 
     /// <summary>
     /// Damage to inflict on the root when the woundable is amputated.
@@ -210,4 +210,9 @@ public sealed class WoundableComponentState : ComponentState
     public WoundableSeverity WoundableSeverity;
 
     public float HealingRateAccumulated;
+    public FixedPoint2 IntegrityCap;
+    public Dictionary<WoundableSeverity, FixedPoint2> Thresholds = new();
+
+    public FixedPoint2 BleedsThreshold;
+    public FixedPoint2 DamageThreshold;
 }
