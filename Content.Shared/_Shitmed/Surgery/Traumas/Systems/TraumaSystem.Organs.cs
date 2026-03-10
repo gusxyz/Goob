@@ -118,7 +118,7 @@ public partial class TraumaSystem
             }
         }
 
-        _audio.PlayPvs(args.Organ.Comp.OrganDestroyedSound, body.Value);
+        _audio.PlayPredicted(args.Organ.Comp.OrganDestroyedSound, body.Value, body.Value);
         _body.RemoveOrgan(args.Organ, args.Organ.Comp);
 
         PredictedQueueDel(args.Organ.Owner);

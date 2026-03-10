@@ -23,6 +23,7 @@ using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Goobstation.Common.SecondSkin;
+using Content.Shared.Random.Helpers;
 
 namespace Content.Shared._Shitmed.Medical.Surgery.Traumas.Systems;
 
@@ -410,8 +411,8 @@ public partial class TraumaSystem
              - deduction + woundInflicter.Comp.TraumasChances[TraumaType.BoneDamage],
             0,
             1);
-
-        return _random.Prob((float) chance);
+        var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(new List<int> { (int) _timing.CurTick.Value, GetNetEntity(target).Id }));
+        return rand.Prob((float) chance);
     }
 
     public bool RandomNerveDamageChance(
@@ -446,7 +447,8 @@ public partial class TraumaSystem
                 0,
                 1);
 
-        return _random.Prob((float) chance); // fix randoms
+        var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(new List<int> { (int) _timing.CurTick.Value, GetNetEntity(target).Id }));
+        return rand.Prob((float) chance);
     }
 
     public bool RandomOrganTraumaChance(
@@ -485,9 +487,8 @@ public partial class TraumaSystem
                 0,
                 1);
 
-        // make this all predicted random.
-
-        return _random.Prob((float) chance);
+        var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(new List<int> { (int) _timing.CurTick.Value, GetNetEntity(target).Id }));
+        return rand.Prob((float) chance);
     }
 
     public bool RandomDismembermentTraumaChance(
@@ -553,8 +554,8 @@ public partial class TraumaSystem
                 0,
                 1);
 
-        var result = _random.Prob((float) chance);
-        return result;
+        var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(new List<int> { (int) _timing.CurTick.Value, GetNetEntity(target).Id }));
+        return rand.Prob((float) chance);
     }
 
     public EntityUid AddTrauma(
@@ -665,14 +666,20 @@ public partial class TraumaSystem
 
                 case TraumaType.OrganDamage:
                     var organs = _body.GetPartOrgans(target).ToList();
-                    _random.Shuffle(organs);
+                    var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(
+                        new List<int> { (int) _timing.CurTick.Value, GetNetEntity(target).Id }));
+
+                    var n = organs.Count;
+                    while (n > 1)
+                    {
+                        n--;
+                        var k = rand.Next(n + 1);
+                        (organs[k], organs[n]) = (organs[n], organs[k]);
+                    }
 
                     var chosenOrgan = organs.FirstOrNull();
                     if (chosenOrgan != null)
-                    {
                         targetChosen = chosenOrgan.Value.Id;
-                    }
-
                     break;
                 case TraumaType.Dismemberment:
                     targetChosen = target.Comp.ParentWoundable;

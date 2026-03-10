@@ -221,7 +221,6 @@ public sealed partial class WoundSystem
     private void OnWoundSeverityPointChanged(EntityUid uid, WoundComponent component, WoundSeverityPointChangedEvent args)
     {
         var delta = args.Overflow ?? args.NewSeverity - args.OldSeverity;
-
         if (TerminatingOrDeleted(uid)
             || TerminatingOrDeleted(component.HoldingWoundable)
             // || !TryComp<TraumaInflicterComponent>(uid, out var traumaInflicter) // Goob edit
@@ -238,7 +237,6 @@ public sealed partial class WoundSystem
                 || !TryComp(bone, out BoneComponent? boneComp)
                 || boneComp.BoneSeverity != BoneSeverity.Broken))
             return;*/
-
         /*if (!IsWoundableRoot(component.HoldingWoundable, woundable) // We need to add a check because the root woundable is set to the bodypart itself on removal (why wulf?????)
             || bodyPart.Body is null)
         {
@@ -251,11 +249,34 @@ public sealed partial class WoundSystem
         // Goob edit end
     }
 
+    private void HandleWoundMedGib(EntityUid body)
+    {
+        var totalDamage = FixedPoint2.Zero;
+        var totalCap = FixedPoint2.Zero;
+
+        foreach (var (id, _) in _body.GetBodyChildren(body))
+        {
+            if (!TryComp<WoundableComponent>(id, out var w))
+                continue;
+            totalCap += w.IntegrityCap;
+            totalDamage += w.IntegrityCap - w.WoundableIntegrity;
+        }
+
+        if (totalCap == FixedPoint2.Zero || totalDamage / totalCap < 0.75f)
+            return;
+
+        _body.GibBody(body,
+            gibOrgans: true,
+            launchGibs: true,
+            splatModifier: 1.5f);
+    }
+
     private void OnDamageChanged(EntityUid uid, WoundableComponent component, ref DamageChangedEvent args)
     {
         // Skip if there was no damage delta or if wounds aren't allowed
         if (args.UncappedDamage == null // Goobstation
-            || !component.AllowWounds)
+            || !component.AllowWounds
+            || _timing.ApplyingState)
             return;
 
         // Create or update wounds based on damage changes
@@ -265,9 +286,7 @@ public sealed partial class WoundSystem
                 continue; // Only create wounds for damage or healing
 
             if (damageValue < 0)
-            {
                 TryHealWoundsOnWoundable(uid, -damageValue, damageType, out var healed, component, ignoreBlockers: args.IgnoreBlockers);
-            }
             else
             {
                 // Only create wound if it's a valid damage type for wounds
@@ -304,11 +323,10 @@ public sealed partial class WoundSystem
             || bodyPart.Body is not { } body)
             return;
 
-        if (TryFumble("arm-fumble", new SoundPathSpecifier("/Audio/Effects/slip.ogg"), body, 0.20f))
-        {
-            args.Handled = true;
-            args.Cancel();
-        }
+        if (!TryFumble("arm-fumble", new SoundPathSpecifier("/Audio/Effects/slip.ogg"), body, 0.20f))
+            return;
+        args.Handled = true;
+        args.Cancel();
     }
 
     private void OnAttemptHandsShoot(EntityUid uid, WoundableComponent component, ref AttemptHandsShootEvent args)
@@ -499,6 +517,7 @@ public sealed partial class WoundSystem
     /// <param name="uid">UID of the wound.</param>
     /// <param name="severity">Severity to set.</param>
     /// <param name="wound">Wound to which severity is applied.</param>
+    /// <param name="woundable">The woundable AKA the body part to which the wound is to be applied.</param>
     public void SetWoundSeverity(EntityUid uid,
         FixedPoint2 severity,
         WoundComponent? wound = null,
@@ -757,7 +776,7 @@ public sealed partial class WoundSystem
                 Dirty(body, targeting);
             }
 
-            _audio.PlayPvs(woundableComp.WoundableDestroyedSound, body);
+            _audio.PlayPredicted(woundableComp.WoundableDestroyedSound, body, body);
             _appearance.SetData(woundableEntity,
                 WoundableVisualizerKeys.Wounds,
                 new WoundVisualizerGroupData(GetWoundableWounds(woundableEntity).Select(ent => GetNetEntity(ent)).ToList()));
@@ -882,7 +901,7 @@ public sealed partial class WoundSystem
             || !woundableComp.CanRemove)
             return;
 
-        _audio.PlayPvs(woundableComp.WoundableDelimbedSound, bodyPart.Body.Value);
+        _audio.PlayPredicted(woundableComp.WoundableDelimbedSound, bodyPart.Body.Value, bodyPart.Body.Value);
 
         // goob edit
         var ampEv = new BeforeAmputationDamageEvent();

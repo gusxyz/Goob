@@ -18,34 +18,31 @@ public sealed partial class MobThresholdSystem
     /// <returns>Total damage from vital body parts, or total damage if not a complex body or no vital parts found</returns>
     public FixedPoint2 CheckVitalDamage(EntityUid target, DamageableComponent damageableComponent)
     {
-        var damage = damageableComponent.TotalDamage;
+        if (!TryComp(target, out BodyComponent? body) || body.BodyType != BodyType.Complex || body.RootContainer?.ContainedEntity is not { } rootPart)
+            return damageableComponent.TotalDamage;
 
-        if (!TryComp(target, out BodyComponent? body) ||
-            body.BodyType != BodyType.Complex)
-            return damage;
+        var result = FixedPoint2.Zero;
 
-        if (body.RootContainer?.ContainedEntity is not { } rootPart)
-            return damage;
-
-        FixedPoint2 result = FixedPoint2.Zero;
-
-        var criticalParts = new[]
+        foreach (var (partId, _) in _wound.GetAllWoundableChildren(rootPart))
         {
-            BodyPartType.Head,
-            BodyPartType.Chest,
-            BodyPartType.Groin
-        };
-
-        foreach (var (woundable, _) in _wound.GetAllWoundableChildren(rootPart))
-        {
-            if (!TryComp(woundable, out DamageableComponent? wdc) ||
-                !TryComp(woundable, out BodyPartComponent? bpc))
+            if (!TryComp(partId, out DamageableComponent? wdc)
+                || !TryComp(partId, out BodyPartComponent? bpc))
                 continue;
 
-            if (criticalParts.Contains(bpc.PartType))
-                result += wdc.TotalDamage;
-        }
+            var weight = bpc.PartType switch
+            {
+                BodyPartType.Head => 2.0f,
+                BodyPartType.Chest => 1.75f,
+                BodyPartType.Groin => 1.5f,
+                BodyPartType.Arm => 0.5f,
+                BodyPartType.Hand => 0.3f,
+                BodyPartType.Leg => 0.5f,
+                BodyPartType.Foot => 0.3f,
+                _ => 1.0f,
+            };
 
+            result += wdc.TotalDamage * weight;
+        }
         return result;
     }
 

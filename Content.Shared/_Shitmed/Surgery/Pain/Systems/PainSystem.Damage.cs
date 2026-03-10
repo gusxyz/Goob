@@ -28,6 +28,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Shared.Random.Helpers;
 
 namespace Content.Shared._Shitmed.Medical.Surgery.Pain.Systems;
 
@@ -527,13 +528,14 @@ public partial class PainSystem
         AudioParams? audioParams = null,
         string? screamString = null)
     {
+        var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(new List<int> { (int) _timing.CurTick.Value, GetNetEntity(body).Id }));
         if (!_screamsEnabled
-            || !_random.Prob(_screamChance)
+            || !rand.Prob(_screamChance)
             || _mobState.IsDead(body))
             return null;
 
         CleanupSounds(nerveSys);
-        var sound = _IHaveNoMouthAndIMustScream.PlayPvs(specifier, body, audioParams);
+        var sound = _IHaveNoMouthAndIMustScream.PlayPredicted(specifier, body, body, audioParams);
         if (!sound.HasValue)
             return null;
 
@@ -546,14 +548,14 @@ public partial class PainSystem
 
     public Entity<AudioComponent>? PlayPainSound(EntityUid body, SoundSpecifier specifier, AudioParams? audioParams = null, string? screamString = null)
     {
-        if (!_screamsEnabled
-            || !_random.Prob(_screamChance))
+        var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(new List<int> { (int) _timing.CurTick.Value, GetNetEntity(body).Id }));
+        if (!_screamsEnabled || !rand.Prob(_screamChance))
             return null;
 
         if (screamString != null)
             _popup.PopupPredicted(screamString, body, null, PopupType.MediumCaution);
 
-        return _IHaveNoMouthAndIMustScream.PlayPvs(specifier, body, audioParams);
+        return _IHaveNoMouthAndIMustScream.PlayPredicted(specifier, body, body, audioParams);
     }
 
     public Entity<AudioComponent>? PlayPainSound(EntityUid body,
@@ -562,13 +564,14 @@ public partial class PainSystem
         AudioParams? audioParams = null,
         string? screamString = null)
     {
+        var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(new List<int> { (int) _timing.CurTick.Value, GetNetEntity(body).Id }));
         if (!_screamsEnabled
-            || !_random.Prob(_screamChance)
+            || !rand.Prob(_screamChance)
             || !TryComp(body, out ConsciousnessComponent? consciousness)
             || !consciousness.HasPainScreams)
             return null;
 
-        var sound = _IHaveNoMouthAndIMustScream.PlayPvs(specifier, body, audioParams);
+        var sound = _IHaveNoMouthAndIMustScream.PlayPredicted(specifier, body, body, audioParams);
         if (!sound.HasValue)
             return null;
 
@@ -586,8 +589,8 @@ public partial class PainSystem
         AudioParams? audioParams = null,
         string? screamString = null)
     {
-        if (!_screamsEnabled
-            || !_random.Prob(_screamChance))
+        var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(new List<int> { (int) _timing.CurTick.Value, GetNetEntity(body).Id }));
+        if (!_screamsEnabled || !rand.Prob(_screamChance))
             return;
 
         if (screamString != null)
@@ -662,7 +665,7 @@ public partial class PainSystem
 
             shouldUpdate = true;
         }
-
+        var rand = new System.Random(SharedRandomExtensions.HashCodeCombine(new List<int> { (int) _timing.CurTick.Value, GetNetEntity(body).Id }));
         if (_timing.CurTime > nerveSys.NextCritScream)
         {
             if (_mobState.IsCritical(body))
@@ -672,7 +675,7 @@ public partial class PainSystem
                     sex = humanoid.Sex;
 
                 CleanupSounds(nerveSys);
-                if (_trauma.HasBodyTrauma(body, TraumaType.OrganDamage) && _random.Prob(0.22f))
+                if (_trauma.HasBodyTrauma(body, TraumaType.OrganDamage) && rand.Prob(0.22f))
                 {
                     // If the person suffers organ damage, do funny gaggling sound :3
                     PlayPainSound(body,
@@ -683,17 +686,17 @@ public partial class PainSystem
                 else
                 {
                     // Play screaming with less chance
-                    if (_random.Prob(0.34f))
+                    if (rand.Prob(0.34f))
                         PlayPainSound(body, nerveSys, nerveSys.PainShockScreams[sex], AudioParams.Default.WithVolume(12f));
                     else
                         // Whimpering
                         PlayPainSound(body,
                             nerveSys,                    // Pained or normal
-                            _random.Prob(0.34f) ? nerveSys.PainShockWhimpers[sex] : nerveSys.CritWhimpers[sex],
+                            rand.Prob(0.34f) ? nerveSys.PainShockWhimpers[sex] : nerveSys.CritWhimpers[sex],
                             AudioParams.Default.WithVolume(-12f));
                 }
-
-                nerveSys.NextCritScream = _timing.CurTime + _random.Next(nerveSys.CritScreamsIntervalMin, nerveSys.CritScreamsIntervalMax);
+                var nextScream = nerveSys.CritScreamsIntervalMin + (nerveSys.CritScreamsIntervalMax - nerveSys.CritScreamsIntervalMin) * rand.NextDouble();
+                nerveSys.NextCritScream = _timing.CurTime + nextScream;
             }
         }
 
@@ -784,9 +787,6 @@ public partial class PainSystem
 
     private void ApplyPainReflexesEffects(EntityUid body, Entity<NerveSystemComponent> nerveSys, PainThresholdTypes reaction)
     {
-        if (!_net.IsServer)
-            return;
-
         var sex = Sex.Unsexed;
         if (TryComp<HumanoidAppearanceComponent>(body, out var humanoid))
             sex = humanoid.Sex;
@@ -808,8 +808,9 @@ public partial class PainSystem
                 _jitter.DoJitter(body, nerveSys.Comp.PainShockStunTime / 1.4, true, 30f, 12f);
 
                 // They aren't put into Pain Sounds, because they aren't supposed to stop after an entity finishes jerking around in pain
-                _IHaveNoMouthAndIMustScream.PlayPvs(
+                _IHaveNoMouthAndIMustScream.PlayPredicted(
                     nerveSys.Comp.PainRattles,
+                    body,
                     body,
                     AudioParams.Default.WithVolume(-12f));
 

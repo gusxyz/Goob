@@ -356,13 +356,8 @@ public abstract partial class SharedBloodstreamSystem
         if (!result)
             return;
 
-        _audio.PlayPvs(new SoundPathSpecifier("/Audio/Effects/lightburn.ogg"), bodyPart.Body.Value);
-        _popup.PopupPredicted(Loc.GetString("bloodstream-component-wounds-cauterized"),
-            bodyPart.Body.Value,
-            bodyPart.Body.Value,
-            Filter.Entities(bodyPart.Body.Value),
-            true,
-            PopupType.Medium);
+        _audio.PlayPredicted(new SoundPathSpecifier("/Audio/Effects/lightburn.ogg"), bodyPart.Body.Value, bodyPart.Body.Value);
+        _popup.PopupClient(Loc.GetString("bloodstream-component-wounds-cauterized"), bodyPart.Body.Value, PopupType.Medium);
     }
 
     // begin Goobstation: port EE height/width sliders

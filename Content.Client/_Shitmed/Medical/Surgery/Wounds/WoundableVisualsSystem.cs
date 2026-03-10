@@ -17,9 +17,11 @@ using Content.Shared._Shitmed.Medical.Surgery.Wounds.Systems;
 using Content.Shared.Body.Part;
 using Content.Shared.Body.Systems;
 using Content.Goobstation.Maths.FixedPoint;
+using Content.Shared._Shitmed.Medical.Surgery.Wounds.Components;
 using Content.Shared.Humanoid;
 using Robust.Client.GameObjects;
 using Robust.Shared.Random;
+using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
 namespace Content.Client._Shitmed.Medical.Surgery.Wounds;
@@ -35,6 +37,8 @@ public sealed class WoundableVisualsSystem : VisualizerSystem<WoundableVisualsCo
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly WoundSystem _wound = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
+    [Dependency] private readonly IGameTiming _timing  = default!;
+
     #endregion
     #region Constants
     private const float AltBleedingSpriteChance = 0.15f;
@@ -135,6 +139,9 @@ public sealed class WoundableVisualsSystem : VisualizerSystem<WoundableVisualsCo
 
     private void OnWoundableIntegrityChanged(Entity<WoundableVisualsComponent> ent, ref WoundableIntegrityChangedEvent args)
     {
+        if (_timing.ApplyingState)
+            return;
+
         var bodyPart = Comp<BodyPartComponent>(ent);
         if (!bodyPart.Body.HasValue)
         {

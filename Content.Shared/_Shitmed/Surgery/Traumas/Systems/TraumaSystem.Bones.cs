@@ -62,7 +62,7 @@ public partial class TraumaSystem
             _ => 0f,
         };
 
-        _audio.PlayPvs(bone.Comp.BoneBreakSound, bodyComp.Body.Value, AudioParams.Default.WithVolume(volumeFloat));
+        _audio.PlayPredicted(bone.Comp.BoneBreakSound, bodyComp.Body.Value, bodyComp.Body.Value, AudioParams.Default.WithVolume(volumeFloat));
     }
 
     private void OnBoneIntegrityChanged(Entity<BoneComponent> bone, ref BoneIntegrityChangedEvent args)
