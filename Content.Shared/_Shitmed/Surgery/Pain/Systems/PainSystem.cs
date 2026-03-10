@@ -53,7 +53,7 @@ public sealed partial class PainSystem : EntitySystem
     [Dependency] private readonly ConsciousnessSystem _consciousness = default!;
     [Dependency] private readonly TraumaSystem _trauma = default!;
 
-    private bool _screamsEnabled = false;
+    private bool _screamsEnabled;
     private float _screamChance = 0.20f;
     public override void Initialize()
     {

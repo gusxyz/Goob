@@ -80,8 +80,10 @@ public partial class TraumaSystem
                 _virtual.DeleteInHandsMatching(bodyComp.Body.Value, bone);
 
             if (TryGetWoundableTrauma(bone.Comp.BoneWoundable.Value, out var traumas, TraumaType.BoneDamage))
+            {
                 foreach (var trauma in traumas.Where(trauma => trauma.Comp.TraumaTarget == bone))
                     RemoveTrauma(trauma);
+            }
         }
 
         switch (bodyComp.PartType)
@@ -121,11 +123,10 @@ public partial class TraumaSystem
             || bodyPart.Body is not { } body)
             return;
 
-        if (TryFumble("arm-fumble", new SoundPathSpecifier("/Audio/Effects/slip.ogg"), body, odds))
-        {
-            args.Handled = true;
-            args.Cancel();
-        }
+        if (!TryFumble("arm-fumble", new SoundPathSpecifier("/Audio/Effects/slip.ogg"), body, odds))
+            return;
+        args.Handled = true;
+        args.Cancel();
     }
 
     private void OnAttemptHandsShoot(Entity<BoneComponent> bone, ref AttemptHandsShootEvent args)
@@ -216,26 +217,19 @@ public partial class TraumaSystem
         if (!Resolve(body, ref bodyComp))
             return;
 
-        bool hasBrokenBones = false;
+        var hasBrokenBones = false;
 
         var rootPart = bodyComp.RootContainer.ContainedEntity;
         if (rootPart.HasValue)
         {
             foreach (var (_, woundable) in _wound.GetAllWoundableChildren(rootPart.Value))
             {
-                if (woundable.Bone == null)
-                    continue;
-
                 foreach (var boneEntity in woundable.Bone.ContainedEntities)
                 {
-                    if (!TryComp(boneEntity, out BoneComponent? boneComp))
+                    if (!TryComp(boneEntity, out BoneComponent? boneComp) || boneComp.BoneSeverity != BoneSeverity.Broken)
                         continue;
-
-                    if (boneComp.BoneSeverity == BoneSeverity.Broken)
-                    {
-                        hasBrokenBones = true;
-                        break;
-                    }
+                    hasBrokenBones = true;
+                    break;
                 }
 
                 if (hasBrokenBones)
